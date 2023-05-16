@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    config:
+      uri: http://192.168.0.62:8888
+      name: account-service, ecommerce, common

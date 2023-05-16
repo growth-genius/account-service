@@ -1,0 +1,23 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: account-service
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+      path: /h2-console
+  servlet:
+    multipart:
+      max-file-size: 10MB
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true # eureka
+    fetch-registry: true
+    service-url:
+      defaultZone: http://192.168.0.62:8761/eureka
