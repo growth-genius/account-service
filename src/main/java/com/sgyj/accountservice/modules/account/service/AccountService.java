@@ -1,17 +1,22 @@
-package com.sgyj.accountservice.modules.account;
+package com.sgyj.accountservice.modules.account.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sgyj.accountservice.infra.advice.exceptions.ExpiredTokenException;
 import com.sgyj.accountservice.infra.advice.exceptions.NotFoundException;
+import com.sgyj.accountservice.infra.properties.KafkaUserTopicProperties;
 import com.sgyj.accountservice.infra.security.CredentialInfo;
 import com.sgyj.accountservice.infra.security.Jwt;
 import com.sgyj.accountservice.infra.security.Jwt.Claims;
 import com.sgyj.accountservice.modules.account.dto.AccountDto;
 import com.sgyj.accountservice.modules.account.dto.TokenDto;
+import com.sgyj.accountservice.modules.account.dto.kafka.EmailMessage;
 import com.sgyj.accountservice.modules.account.entity.Account;
 import com.sgyj.accountservice.modules.account.enums.LoginType;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
 import com.sgyj.accountservice.modules.account.form.AuthCodeForm;
 import com.sgyj.accountservice.modules.account.repository.AccountRepository;
+import com.sgyj.accountservice.modules.account.service.kafka.KafkaAccountProducer;
+import com.sgyj.accountservice.modules.account.service.kafka.KafkaEmailProducer;
 import com.sgyj.accountservice.modules.common.annotation.BaseServiceAnnotation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,6 +30,9 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
     private final Jwt jwt;
+    private final KafkaEmailProducer kafkaEmailProducer;
+    private final KafkaUserTopicProperties kafkaUserTopicProperties;
+    private final KafkaAccountProducer kafkaAccountProducer;
 
     /**
      * 2
@@ -33,15 +41,17 @@ public class AccountService {
      * @param accountSaveForm account 저장 폼
      * @return AccountDto account 생성 결과 Dto
      */
-    public AccountDto saveAccount(AccountSaveForm accountSaveForm) {
+    public AccountDto saveAccount(AccountSaveForm accountSaveForm) throws JsonProcessingException {
         accountSaveForm.setPassword(passwordEncoder.encode(accountSaveForm.getPassword()));
 
         validateAccount(accountSaveForm);
 
         String authCode = sendSignUpConfirmEmail(accountSaveForm.getEmail());
         Account account = Account.createAccountByFormAndAuthCode(accountSaveForm, authCode);
-        accountRepository.save(account);
-        return AccountDto.from(account);
+        // accountRepository.save(account);
+        AccountDto accountDto = AccountDto.from(account);
+        kafkaAccountProducer.send(kafkaUserTopicProperties.getAccountTopic(), accountDto);
+        return accountDto;
     }
 
     /**
@@ -50,8 +60,9 @@ public class AccountService {
      * @param email 이메일
      * @return authCode 인증코드
      */
-    private String sendSignUpConfirmEmail(String email) {
+    private String sendSignUpConfirmEmail(String email) throws JsonProcessingException {
         String authCode = RandomStringUtils.randomAlphanumeric(12);
+        kafkaEmailProducer.send(kafkaUserTopicProperties.getMailSendTopic(), EmailMessage.of(email, "제목", authCode));
         return authCode;
     }
 
@@ -78,7 +89,7 @@ public class AccountService {
      * @param nickName 닉네임
      * @return boolean 닉네임 유효값 확인 결과
      */
-    boolean validNickname(String nickName) {
+    public boolean validNickname(String nickName) {
         return accountRepository.findByNickname(nickName).isPresent();
     }
 

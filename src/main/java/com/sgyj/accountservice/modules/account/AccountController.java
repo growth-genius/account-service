@@ -1,10 +1,12 @@
 package com.sgyj.accountservice.modules.account;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sgyj.accountservice.infra.security.CredentialInfo;
 import com.sgyj.accountservice.modules.account.dto.AccountDto;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
 import com.sgyj.accountservice.modules.account.form.AuthCodeForm;
 import com.sgyj.accountservice.modules.account.form.SignInForm;
+import com.sgyj.accountservice.modules.account.service.AccountService;
 import com.sgyj.accountservice.modules.common.annotation.RestBaseAnnotation;
 import com.sgyj.accountservice.modules.utils.ApiUtil;
 import jakarta.validation.Valid;
@@ -17,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestBaseAnnotation
 @RequiredArgsConstructor
-@RequestMapping("/api/account")
+@RequestMapping("/account/auth")
 public class AccountController {
 
     private final AccountService accountService;
 
     @PostMapping("/sign-up")
-    public ApiUtil.ApiResult<AccountDto> addUser(@RequestBody @Valid AccountSaveForm accountSaveForm) {
+    public ApiUtil.ApiResult<AccountDto> addUser(@RequestBody @Valid AccountSaveForm accountSaveForm) throws JsonProcessingException {
         return ApiUtil.success(accountService.saveAccount(accountSaveForm));
     }
 

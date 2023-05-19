@@ -24,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,7 @@ public class Account extends UpdatedEntity {
     /* 비밀번호 */
     private String password;
     /* 로그인 형태 */
+    @Enumerated(EnumType.STRING)
     private LoginType loginType;
     /* 권한 */
     @ElementCollection(fetch = LAZY)
@@ -146,6 +148,7 @@ public class Account extends UpdatedEntity {
      */
     public static Account createAccountByFormAndAuthCode(AccountSaveForm accountSaveForm, String authCode) {
         Account account = new Account();
+        account.uuid = UUID.randomUUID().toString();
         account.username = accountSaveForm.getUsername();
         account.password = accountSaveForm.getPassword();
         account.email = accountSaveForm.getEmail();

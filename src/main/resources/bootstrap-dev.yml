@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    activate:
+      on-profile: dev
+  cloud:
+    config:
+      uri: http://config-service:8888
+      name: account-service, ecommerce, common

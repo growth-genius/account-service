@@ -3,7 +3,7 @@ package com.sgyj.accountservice.infra.security;
 import static com.sgyj.accountservice.modules.utils.CommonUtil.authorities;
 
 import com.sgyj.accountservice.infra.advice.exceptions.NotFoundException;
-import com.sgyj.accountservice.modules.account.AccountService;
+import com.sgyj.accountservice.modules.account.service.AccountService;
 import com.sgyj.accountservice.modules.account.dto.AccountDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
