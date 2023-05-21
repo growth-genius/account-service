@@ -57,7 +57,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
 
     private void setNewAuthenticationToken(HttpServletRequest req, String authorizationToken) {
         Jwt.Claims claims = verify(authorizationToken);
-        Long accountId = claims.accountId;
+        Long accountId = claims.id;
         String email = claims.email;
 
         if (nonNull(accountId) && isNotEmpty(email)) {

@@ -1,5 +1,7 @@
 package com.sgyj.accountservice.modules.account.dto;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 import com.sgyj.accountservice.infra.security.Jwt;
 import com.sgyj.accountservice.modules.account.entity.Account;
 import com.sgyj.accountservice.modules.account.enums.AccountRole;
@@ -13,9 +15,9 @@ import lombok.Data;
 public class AccountDto {
 
     /** 로그인 아이디 */
-    private Long accountId;
+    private Long id;
     /** 고유 식별자 */
-    private String uuid;
+    private String accountId;
     /** 이메일 */
     private String email;
     /** 사용자 이름 */
@@ -32,31 +34,23 @@ public class AccountDto {
     private int loginCount;
     /** 마지막 로그인 일자 */
     private LocalDateTime lastLoginAt;
-
+    /** 프로필 이미지 */
     private String profileImage;
+    /** 로그인 타입 */
     private LoginType loginType;
+    /** 접속 토큰 */
     private String accessToken;
+    /** 재발급 토큰 */
     private String refreshToken;
-    /* 나이 */
+    /** 나이 */
     private int age;
-
+    /** 생년월 */
     private int birth;
+    /** 여행 테마 */
     private Set<TravelTheme> travelThemes;
 
-    AccountDto ( Account account ) {
-        this.accountId = account.getId();
-        this.uuid = account.getUuid();
-        this.userName = account.getUsername();
-        this.nickname = account.getNickname();
-        this.email = account.getEmail();
-        this.loginType = account.getLoginType();
-        this.roles = account.getRoles();
-        this.age = account.getAge();
-        this.birth = account.getBirth();
-        this.travelThemes = account.getTravelThemes();
-        this.profileImage = account.getProfileImage();
-        this.joinedAt = account.getJoinedAt();
-
+    private AccountDto ( Account account ) {
+        copyProperties(account, this);
     }
 
     public static AccountDto from ( Account account ) {
@@ -70,7 +64,7 @@ public class AccountDto {
     }
 
     public void generateAccessToken ( Jwt jwt ) {
-        Jwt.Claims claims = Jwt.Claims.of( accountId, email, roles.stream().map( AccountRole::name ).toArray( String[]::new ) );
+        Jwt.Claims claims = Jwt.Claims.of(id, accountId, email, roles.stream().map( AccountRole::name ).toArray( String[]::new ) );
         this.accessToken = jwt.createAccessToken( claims );
         this.refreshToken = jwt.createRefreshToken( claims );
     }

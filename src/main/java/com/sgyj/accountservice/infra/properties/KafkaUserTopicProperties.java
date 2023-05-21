@@ -11,5 +11,6 @@ public class KafkaUserTopicProperties {
 
     private String mailSendTopic;
     private String accountTopic;
+    private String authenticationMailTopic;
 
 }

@@ -31,7 +31,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         try {
             final AccountDto finalAccountDto = accountService.login( principal, credential );
             CredentialInfo credentialInfo = new CredentialInfo( finalAccountDto.getPassword(), finalAccountDto.getLoginType() );
-            JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken( new JwtAuthentication( finalAccountDto.getAccountId(),
+            JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken( new JwtAuthentication( finalAccountDto.getId(),
                                                                                                             finalAccountDto.getEmail() ),
                                                                                      credentialInfo,
                                                                                      authorities( finalAccountDto.getRoles() ) );

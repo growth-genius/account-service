@@ -1,6 +1,5 @@
 package com.sgyj.accountservice.modules.account.dto.kafka;
 
-import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
 

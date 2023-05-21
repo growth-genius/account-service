@@ -6,17 +6,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.sgyj.accountservice.modules.account.dto.AccountDto;
 import com.sgyj.accountservice.modules.account.dto.kafka.AccountPayload;
 import com.sgyj.accountservice.modules.account.dto.kafka.Fields;
-import com.sgyj.accountservice.modules.account.dto.kafka.KafkaAccountDto;
 import com.sgyj.accountservice.modules.account.dto.kafka.Payload;
 import com.sgyj.accountservice.modules.account.dto.kafka.Schema;
+import com.sgyj.accountservice.modules.account.records.KafkaAccountDto;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -27,21 +24,21 @@ public class KafkaAccountProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final List<Fields> fields = Arrays.asList(
-        new Fields("string", true, "uuid"),
+        new Fields("string", true, "account_id"),
         new Fields("string", true, "username"),
         new Fields("string", true, "nickname"),
         new Fields("string", true, "email"),
         new Fields("string", true, "password"),
-        new Fields("string", true, "loginType"),
+        new Fields("string", true, "login_type"),
         new Fields("int32", true, "age"),
         new Fields("int32", true, "birth"),
-        new Fields("string", true, "accountStatus"),
-        new Fields("string", true, "profileImage"),
-        new Fields("datetime", true, "joinedAt"),
-        new Fields("int32", true, "authCode"),
-        new Fields("int32", true, "loginCount"),
-        new Fields("int32", true, "loginFailCount"),
-        new Fields("datetime", true, "lastLoginAt"));
+        new Fields("string", true, "account_status"),
+        new Fields("string", true, "profile_image"),
+        new Fields("string", true, "joined_at"),
+        new Fields("int32", true, "auth_code"),
+        new Fields("int32", true, "login_count"),
+        new Fields("int32", true, "login_fail_count"),
+        new Fields("string", true, "last_login_at"));
 
     private final Schema schema = Schema.builder().type("struct").fields(fields).optional(false).name("account").build();
 
@@ -52,12 +49,8 @@ public class KafkaAccountProducer {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         try {
             String jsonString = objectMapper.writeValueAsString(kafkaAccountDto);
-            SendResult<String, String> stringStringSendResult = kafkaTemplate.send(kafkaTopic, jsonString).get();
-            ProducerRecord<String, String> producerRecord = stringStringSendResult.getProducerRecord();
-            log.info("key :: {}", producerRecord.key());
-            log.info("key :: {}", producerRecord.partition());
-            log.info("account Producer send data from the Account microservice : " + kafkaAccountDto);
-        } catch (InterruptedException | ExecutionException | JsonProcessingException e) {
+            kafkaTemplate.send(kafkaTopic, jsonString);
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }

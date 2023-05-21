@@ -39,11 +39,10 @@ public class Account extends UpdatedEntity {
     /* 아이디 */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
     private Long id;
     /* 고유 식별자 */
     @Column(unique = true)
-    private String uuid;
+    private String accountId;
     /* 사용자 이름 */
     private String username;
     /* 사용자 별명 */
@@ -142,13 +141,13 @@ public class Account extends UpdatedEntity {
     /**
      * 입력 데이터로 Account 계정 생성
      *
-     * @param accountSaveForm Account입력 form
-     * @param authCode
-     * @return
+     * @param accountSaveForm Account 입력 form
+     * @param authCode 메일 인증 코드
+     * @return 계정 entity
      */
     public static Account createAccountByFormAndAuthCode(AccountSaveForm accountSaveForm, String authCode) {
         Account account = new Account();
-        account.uuid = UUID.randomUUID().toString();
+        account.accountId = UUID.randomUUID().toString();
         account.username = accountSaveForm.getUsername();
         account.password = accountSaveForm.getPassword();
         account.email = accountSaveForm.getEmail();

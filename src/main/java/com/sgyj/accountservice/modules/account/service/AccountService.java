@@ -15,7 +15,6 @@ import com.sgyj.accountservice.modules.account.enums.LoginType;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
 import com.sgyj.accountservice.modules.account.form.AuthCodeForm;
 import com.sgyj.accountservice.modules.account.repository.AccountRepository;
-import com.sgyj.accountservice.modules.account.service.kafka.KafkaAccountProducer;
 import com.sgyj.accountservice.modules.account.service.kafka.KafkaEmailProducer;
 import com.sgyj.accountservice.modules.common.annotation.BaseServiceAnnotation;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class AccountService {
     private final Jwt jwt;
     private final KafkaEmailProducer kafkaEmailProducer;
     private final KafkaUserTopicProperties kafkaUserTopicProperties;
-    private final KafkaAccountProducer kafkaAccountProducer;
 
     /**
      * 2
@@ -48,10 +46,9 @@ public class AccountService {
 
         String authCode = sendSignUpConfirmEmail(accountSaveForm.getEmail());
         Account account = Account.createAccountByFormAndAuthCode(accountSaveForm, authCode);
-        // accountRepository.save(account);
-        AccountDto accountDto = AccountDto.from(account);
-        kafkaAccountProducer.send(kafkaUserTopicProperties.getAccountTopic(), accountDto);
-        return accountDto;
+        accountRepository.save(account);
+        // kafkaAccountProducer.send(kafkaUserTopicProperties.getAccountTopic(), accountDto);
+        return AccountDto.from(account);
     }
 
     /**
@@ -62,7 +59,7 @@ public class AccountService {
      */
     private String sendSignUpConfirmEmail(String email) throws JsonProcessingException {
         String authCode = RandomStringUtils.randomAlphanumeric(12);
-        kafkaEmailProducer.send(kafkaUserTopicProperties.getMailSendTopic(), EmailMessage.of(email, "제목", authCode));
+        kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(), EmailMessage.of(email, "제목", authCode));
         return authCode;
     }
 

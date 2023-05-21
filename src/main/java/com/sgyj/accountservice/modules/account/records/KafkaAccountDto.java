@@ -1,5 +1,7 @@
-package com.sgyj.accountservice.modules.account.dto.kafka;
+package com.sgyj.accountservice.modules.account.records;
 
+import com.sgyj.accountservice.modules.account.dto.kafka.Payload;
+import com.sgyj.accountservice.modules.account.dto.kafka.Schema;
 import java.io.Serializable;
 
 public record KafkaAccountDto(Schema schema, Payload payload) implements Serializable {
