@@ -1,7 +1,7 @@
 package com.sgyj.accountservice.modules.account.repository;
 
 import com.sgyj.accountservice.modules.account.entity.Account;
-import com.sgyj.accountservice.modules.account.enums.LoginType;
+import com.sgyj.commonservice.enums.LoginType;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

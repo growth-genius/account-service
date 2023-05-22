@@ -1,22 +1,23 @@
 package com.sgyj.accountservice.modules.account.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sgyj.accountservice.infra.advice.exceptions.ExpiredTokenException;
-import com.sgyj.accountservice.infra.advice.exceptions.NotFoundException;
-import com.sgyj.accountservice.infra.properties.KafkaUserTopicProperties;
-import com.sgyj.accountservice.infra.security.CredentialInfo;
-import com.sgyj.accountservice.infra.security.Jwt;
-import com.sgyj.accountservice.infra.security.Jwt.Claims;
-import com.sgyj.accountservice.modules.account.dto.AccountDto;
+import com.sgyj.accountservice.modules.account.dto.CustomAccountDto;
 import com.sgyj.accountservice.modules.account.dto.TokenDto;
-import com.sgyj.accountservice.modules.account.dto.kafka.EmailMessage;
 import com.sgyj.accountservice.modules.account.entity.Account;
-import com.sgyj.accountservice.modules.account.enums.LoginType;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
 import com.sgyj.accountservice.modules.account.form.AuthCodeForm;
 import com.sgyj.accountservice.modules.account.repository.AccountRepository;
 import com.sgyj.accountservice.modules.account.service.kafka.KafkaEmailProducer;
-import com.sgyj.accountservice.modules.common.annotation.BaseServiceAnnotation;
+import com.sgyj.commonservice.advice.exceptions.ExpiredTokenException;
+import com.sgyj.commonservice.advice.exceptions.NotFoundException;
+import com.sgyj.commonservice.annotation.BaseServiceAnnotation;
+
+import com.sgyj.commonservice.dto.account.AccountDto;
+import com.sgyj.commonservice.enums.LoginType;
+import com.sgyj.commonservice.properties.KafkaUserTopicProperties;
+import com.sgyj.commonservice.security.CredentialInfo;
+import com.sgyj.commonservice.security.Jwt;
+import com.sgyj.commonservice.security.Jwt.Claims;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,7 +49,7 @@ public class AccountService {
         Account account = Account.createAccountByFormAndAuthCode(accountSaveForm, authCode);
         accountRepository.save(account);
         // kafkaAccountProducer.send(kafkaUserTopicProperties.getAccountTopic(), accountDto);
-        return AccountDto.from(account);
+        return CustomAccountDto.from(account);
     }
 
     /**
@@ -59,7 +60,7 @@ public class AccountService {
      */
     private String sendSignUpConfirmEmail(String email) throws JsonProcessingException {
         String authCode = RandomStringUtils.randomAlphanumeric(12);
-        kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(), EmailMessage.of(email, "제목", authCode));
+        // kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(), new EmailMessage(email, "제목", authCode));
         return authCode;
     }
 
@@ -101,7 +102,7 @@ public class AccountService {
         Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
         account.login(passwordEncoder, credential.getCredential());
         account.afterLoginSuccess();
-        return AccountDto.createByAccountAndGenerateAccessToken(account, jwt);
+        return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
     }
 
     /**
@@ -118,7 +119,7 @@ public class AccountService {
             throw new BadCredentialsException("인증 코드가 잘못되었습니다. 다시 확인해주세요.");
         }
         account.successAuthUser();
-        return AccountDto.createByAccountAndGenerateAccessToken(account, jwt);
+        return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
     }
 
     /**
@@ -132,7 +133,7 @@ public class AccountService {
             Claims claims = jwt.verify(tokenDto.getRefreshToken());
             Account account = accountRepository.findByEmailAndLoginType(claims.getEmail(), LoginType.TGAHTER)
                 .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
-            AccountDto accountDto = AccountDto.createByAccountAndGenerateAccessToken(account, jwt);
+            AccountDto accountDto = CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
             return TokenDto.builder().accessToken(accountDto.getAccessToken()).refreshToken(accountDto.getRefreshToken()).build();
         }
         throw new ExpiredTokenException();

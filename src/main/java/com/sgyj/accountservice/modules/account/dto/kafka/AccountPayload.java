@@ -2,10 +2,10 @@ package com.sgyj.accountservice.modules.account.dto.kafka;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
-import com.sgyj.accountservice.modules.account.dto.AccountDto;
-import com.sgyj.accountservice.modules.account.enums.AccountRole;
-import com.sgyj.accountservice.modules.account.enums.LoginType;
+import com.sgyj.accountservice.modules.account.dto.CustomAccountDto;
 import com.sgyj.accountservice.modules.account.enums.TravelTheme;
+import com.sgyj.commonservice.enums.AccountRole;
+import com.sgyj.commonservice.enums.LoginType;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Data;
@@ -46,7 +46,7 @@ public class AccountPayload extends Payload {
     private int birth;
     private Set<TravelTheme> travelThemes;
 
-    public static Payload from(AccountDto accountDto) {
+    public static Payload from(CustomAccountDto accountDto) {
         AccountPayload accountPayload = new AccountPayload();
         copyProperties(accountDto, accountPayload);
         return accountPayload;

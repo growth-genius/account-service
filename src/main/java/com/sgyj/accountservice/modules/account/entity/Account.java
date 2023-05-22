@@ -2,14 +2,14 @@ package com.sgyj.accountservice.modules.account.entity;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import com.sgyj.accountservice.infra.advice.exceptions.BadRequestException;
-import com.sgyj.accountservice.infra.common.ErrorMessage;
-import com.sgyj.accountservice.modules.account.enums.AccountRole;
 import com.sgyj.accountservice.modules.account.enums.AccountStatus;
-import com.sgyj.accountservice.modules.account.enums.LoginType;
 import com.sgyj.accountservice.modules.account.enums.TravelTheme;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
-import com.sgyj.accountservice.modules.common.UpdatedEntity;
+import com.sgyj.commonservice.advice.exceptions.BadRequestException;
+import com.sgyj.commonservice.enums.AccountRole;
+import com.sgyj.commonservice.enums.ErrorMessage;
+import com.sgyj.commonservice.enums.LoginType;
+import com.sgyj.commonservice.jpa.UpdatedEntity;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

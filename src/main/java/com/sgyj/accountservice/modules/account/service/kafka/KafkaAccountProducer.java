@@ -3,7 +3,7 @@ package com.sgyj.accountservice.modules.account.service.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.sgyj.accountservice.modules.account.dto.AccountDto;
+import com.sgyj.accountservice.modules.account.dto.CustomAccountDto;
 import com.sgyj.accountservice.modules.account.dto.kafka.AccountPayload;
 import com.sgyj.accountservice.modules.account.dto.kafka.Fields;
 import com.sgyj.accountservice.modules.account.dto.kafka.Payload;
@@ -42,7 +42,7 @@ public class KafkaAccountProducer {
 
     private final Schema schema = Schema.builder().type("struct").fields(fields).optional(false).name("account").build();
 
-    public void send(String kafkaTopic, AccountDto accountDto) {
+    public void send(String kafkaTopic, CustomAccountDto accountDto) {
         log.debug("kafkaAccount.kafkaTopic :: {}", kafkaTopic);
         Payload payload = AccountPayload.from(accountDto);
         KafkaAccountDto kafkaAccountDto = KafkaAccountDto.of(schema, payload);

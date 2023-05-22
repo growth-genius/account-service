@@ -1,13 +1,12 @@
 package com.sgyj.accountservice.infra.config;
 
-import com.sgyj.accountservice.infra.properties.AppProperties;
-import com.sgyj.accountservice.infra.properties.JwtProperties;
-import com.sgyj.accountservice.infra.security.EntryPointHandler;
-import com.sgyj.accountservice.infra.security.Jwt;
-import com.sgyj.accountservice.infra.security.JwtAccessDeniedHandler;
-import com.sgyj.accountservice.infra.security.JwtAuthenticationProvider;
-import com.sgyj.accountservice.infra.security.JwtAuthenticationTokenFilter;
 import com.sgyj.accountservice.modules.account.service.AccountService;
+import com.sgyj.commonservice.properties.JwtProperties;
+import com.sgyj.commonservice.security.EntryPointHandler;
+import com.sgyj.commonservice.security.Jwt;
+import com.sgyj.commonservice.security.JwtAccessDeniedHandler;
+import com.sgyj.commonservice.security.JwtAuthenticationProvider;
+import com.sgyj.commonservice.security.JwtAuthenticationTokenFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -41,9 +40,10 @@ public class SecurityConfig {
         return new JwtAuthenticationTokenFilter(jwtProperties.getHeader(), jwt);
     }
 
+
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider(AccountService accountService) {
-        return new JwtAuthenticationProvider(accountService);
+        return new JwtAuthenticationProviderImpl(accountService);
     }
 
     @Bean
