@@ -1,7 +1,7 @@
 package com.sgyj.accountservice.modules.account.enums;
 
 
-import com.sgyj.accountservice.modules.common.EnumMapperType;
+import com.sgyj.commonservice.enums.EnumMapperType;
 
 public enum TravelTheme implements EnumMapperType {
 

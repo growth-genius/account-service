@@ -2,7 +2,7 @@ package com.sgyj.accountservice.modules.account.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sgyj.accountservice.modules.account.dto.kafka.EmailMessage;
+import com.sgyj.commonservice.dto.mail.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
