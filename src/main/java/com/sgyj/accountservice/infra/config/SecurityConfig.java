@@ -48,16 +48,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-            .csrf().disable()
-            .cors().disable()
-            .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler).authenticationEntryPoint(unAuthorizedHandler).and().headers().frameOptions()
-            .sameOrigin().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and().authorizeHttpRequests().requestMatchers("/account/sign-in", "/account/sign-up", "/account/refresh-token").permitAll()
-            .anyRequest().hasAnyRole("USER", "ADMIN", "LEADER").and().addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.httpBasic().disable().csrf().disable().cors().disable().exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
+            .authenticationEntryPoint(unAuthorizedHandler).and().headers().frameOptions().sameOrigin().and().sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests().anyRequest().permitAll().and()
+            .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

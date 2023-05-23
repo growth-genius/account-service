@@ -9,9 +9,9 @@ import com.sgyj.accountservice.modules.account.form.AuthCodeForm;
 import com.sgyj.accountservice.modules.account.repository.AccountRepository;
 import com.sgyj.accountservice.modules.account.service.kafka.KafkaEmailProducer;
 import com.sgyj.commonservice.advice.exceptions.ExpiredTokenException;
+import com.sgyj.commonservice.advice.exceptions.NoMemberException;
 import com.sgyj.commonservice.advice.exceptions.NotFoundException;
 import com.sgyj.commonservice.annotation.BaseServiceAnnotation;
-
 import com.sgyj.commonservice.dto.account.AccountDto;
 import com.sgyj.commonservice.enums.LoginType;
 import com.sgyj.commonservice.properties.KafkaUserTopicProperties;
@@ -137,6 +137,10 @@ public class AccountService {
             return TokenDto.builder().accessToken(accountDto.getAccessToken()).refreshToken(accountDto.getRefreshToken()).build();
         }
         throw new ExpiredTokenException();
+    }
+
+    public AccountDto getAccount(String accountId) {
+        return CustomAccountDto.from(accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new));
     }
 
 }

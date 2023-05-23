@@ -40,17 +40,23 @@ ext {
 }
 
 dependencies {
-    implementation 'com.sgyj:common-service:1.0.0'
+    implementation 'com.sgyj:common-service:1.0.8'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp' // rabbitmq로 설정파일 읽어들이기 위한 디펜던시
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.apache.kafka:kafka-clients'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     implementation 'org.glassfish.jersey.core:jersey-common:3.1.1'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -81,6 +87,7 @@ dependencies {
     // JWT
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.2'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'

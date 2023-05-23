@@ -1,4 +1,4 @@
-package com.sgyj.accountservice.modules.account;
+package com.sgyj.accountservice.modules.account.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sgyj.accountservice.modules.account.form.AccountSaveForm;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestBaseAnnotation
 @RequiredArgsConstructor
 @RequestMapping("/account/auth")
-public class AccountController {
+public class AccountAuthController {
 
     private final AccountService accountService;
 
@@ -35,7 +35,7 @@ public class AccountController {
         return ApiUtil.success(accountService.validAuthCode(authCodeForm));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     public ApiResult<AccountDto> login(@RequestBody @Valid SignInForm signInForm) {
         return ApiUtil.success(accountService.login(signInForm.getEmail(), new CredentialInfo(signInForm.getPassword())));
     }
@@ -44,6 +44,5 @@ public class AccountController {
     public ApiResult<Boolean> authNickname(@PathVariable String nickname) {
         return ApiUtil.success(accountService.validNickname(nickname));
     }
-
-
+    
 }
