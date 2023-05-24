@@ -87,8 +87,18 @@ public class AccountService {
      * @param nickName 닉네임
      * @return boolean 닉네임 유효값 확인 결과
      */
-    public boolean validNickname(String nickName) {
+    public Boolean validNickname(String nickName) {
         return accountRepository.findByNickname(nickName).isPresent();
+    }
+
+    /**
+     * email 중복확인
+     *
+     * @param email 이메일
+     * @return boolean 이메일 유효값 확인 결과
+     */
+    public Boolean validEmail(String email) {
+        return accountRepository.findByEmail(email).isPresent();
     }
 
     /**
