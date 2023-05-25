@@ -28,7 +28,7 @@ eureka:
 
 logging:
   level:
-    com.sgyj.accountservice: DEBUG
+    com.gg.accountservice: DEBUG
 
 kafka:
   bootstrap-servers-config: 172.18.0.101:9092

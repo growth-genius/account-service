@@ -25,7 +25,7 @@ eureka:
 
 logging:
   level:
-    com.sgyj.accountservice: DEBUG
+    com.gg.accountservice: DEBUG
 
 
 kafka:
