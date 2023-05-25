@@ -3,9 +3,9 @@ package com.gg.accountservice.modules.account.dto;
 import static org.springframework.beans.BeanUtils.copyProperties;
 
 import com.gg.accountservice.modules.account.entity.Account;
-import com.sgyj.commonservice.dto.account.AccountDto;
-import com.sgyj.commonservice.enums.AccountRole;
-import com.sgyj.commonservice.security.Jwt;
+import com.gg.commonservice.dto.account.AccountDto;
+import com.gg.commonservice.enums.AccountRole;
+import com.gg.commonservice.security.Jwt;
 
 public class CustomAccountDto extends AccountDto {
 

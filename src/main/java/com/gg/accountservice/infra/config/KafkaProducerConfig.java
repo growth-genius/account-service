@@ -1,6 +1,6 @@
 package com.gg.accountservice.infra.config;
 
-import com.sgyj.commonservice.properties.KafkaConfigProperties;
+import com.gg.commonservice.properties.KafkaConfigProperties;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

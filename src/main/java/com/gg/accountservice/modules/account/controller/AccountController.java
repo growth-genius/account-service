@@ -1,10 +1,10 @@
 package com.gg.accountservice.modules.account.controller;
 
 import com.gg.accountservice.modules.account.service.AccountService;
-import com.sgyj.commonservice.annotation.RestBaseAnnotation;
-import com.sgyj.commonservice.dto.account.AccountDto;
-import com.sgyj.commonservice.utils.ApiUtil;
-import com.sgyj.commonservice.utils.ApiUtil.ApiResult;
+import com.gg.commonservice.annotation.RestBaseAnnotation;
+import com.gg.commonservice.dto.account.AccountDto;
+import com.gg.commonservice.utils.ApiUtil;
+import com.gg.commonservice.utils.ApiUtil.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

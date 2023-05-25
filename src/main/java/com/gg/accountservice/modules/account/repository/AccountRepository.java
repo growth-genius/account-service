@@ -1,7 +1,7 @@
 package com.gg.accountservice.modules.account.repository;
 
 import com.gg.accountservice.modules.account.entity.Account;
-import com.sgyj.commonservice.enums.LoginType;
+import com.gg.commonservice.enums.LoginType;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

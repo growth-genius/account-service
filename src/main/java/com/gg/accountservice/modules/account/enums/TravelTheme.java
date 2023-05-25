@@ -1,7 +1,7 @@
 package com.gg.accountservice.modules.account.enums;
 
 
-import com.sgyj.commonservice.enums.EnumMapperType;
+import com.gg.commonservice.enums.EnumMapperType;
 
 public enum TravelTheme implements EnumMapperType {
 

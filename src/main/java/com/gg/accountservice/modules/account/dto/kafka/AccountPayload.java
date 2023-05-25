@@ -4,8 +4,8 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 
 import com.gg.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.accountservice.modules.account.enums.TravelTheme;
-import com.sgyj.commonservice.enums.AccountRole;
-import com.sgyj.commonservice.enums.LoginType;
+import com.gg.commonservice.enums.AccountRole;
+import com.gg.commonservice.enums.LoginType;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Data;

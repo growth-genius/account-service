@@ -1,12 +1,12 @@
 package com.gg.accountservice.infra.config;
 
 import com.gg.accountservice.modules.account.service.AccountService;
-import com.sgyj.commonservice.properties.JwtProperties;
-import com.sgyj.commonservice.security.EntryPointHandler;
-import com.sgyj.commonservice.security.Jwt;
-import com.sgyj.commonservice.security.JwtAccessDeniedHandler;
-import com.sgyj.commonservice.security.JwtAuthenticationProvider;
-import com.sgyj.commonservice.security.JwtAuthenticationTokenFilter;
+import com.gg.commonservice.properties.JwtProperties;
+import com.gg.commonservice.security.EntryPointHandler;
+import com.gg.commonservice.security.Jwt;
+import com.gg.commonservice.security.JwtAccessDeniedHandler;
+import com.gg.commonservice.security.JwtAuthenticationProvider;
+import com.gg.commonservice.security.JwtAuthenticationTokenFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

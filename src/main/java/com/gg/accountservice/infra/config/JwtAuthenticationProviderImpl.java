@@ -1,9 +1,9 @@
 package com.gg.accountservice.infra.config;
 
 import com.gg.accountservice.modules.account.service.AccountService;
-import com.sgyj.commonservice.dto.account.AccountDto;
-import com.sgyj.commonservice.security.CredentialInfo;
-import com.sgyj.commonservice.security.JwtAuthenticationProvider;
+import com.gg.commonservice.dto.account.AccountDto;
+import com.gg.commonservice.security.CredentialInfo;
+import com.gg.commonservice.security.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
