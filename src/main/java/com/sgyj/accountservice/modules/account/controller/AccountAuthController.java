@@ -30,8 +30,8 @@ public class AccountAuthController {
         return ApiUtil.success(accountService.saveAccount(accountSaveForm));
     }
 
-    @PostMapping("/check-email")
-    public ApiResult<AccountDto> authCode(@RequestBody @Valid AuthCodeForm authCodeForm) {
+    @PostMapping("/confirm-authcode")
+    public ApiResult<AccountDto> confirmAuthCode(@RequestBody @Valid AuthCodeForm authCodeForm) {
         return ApiUtil.success(accountService.validAuthCode(authCodeForm));
     }
 
@@ -40,9 +40,14 @@ public class AccountAuthController {
         return ApiUtil.success(accountService.login(signInForm.getEmail(), new CredentialInfo(signInForm.getPassword())));
     }
 
+    @GetMapping("/check-email/{email}")
+    public ApiResult<Boolean> authEmail(@PathVariable String email) {
+        return ApiUtil.success(accountService.validEmail(email));
+    }
+
     @GetMapping("/check-nickname/{nickname}")
     public ApiResult<Boolean> authNickname(@PathVariable String nickname) {
         return ApiUtil.success(accountService.validNickname(nickname));
     }
-    
+
 }
