@@ -7,11 +7,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@ConfigurationPropertiesScan
-@SpringBootApplication
-@EnableDiscoveryClient
 @EnableJpaAuditing
 @EnableFeignClients
+@SpringBootApplication
+@EnableDiscoveryClient
+@ConfigurationPropertiesScan
 public class AccountServiceApplication {
 
     public static void main(String[] args) {
