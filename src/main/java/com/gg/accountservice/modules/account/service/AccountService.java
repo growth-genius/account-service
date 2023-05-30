@@ -172,6 +172,9 @@ public class AccountService {
         String accountId = emailMessage.getAccountId();
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         accountRepository.delete(account);
+    }
+
+    /**
      * 인증코드 재발송
      *
      * @param resendAuthForm 인증 코드 재발송 Form
