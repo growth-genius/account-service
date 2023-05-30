@@ -13,6 +13,7 @@ import com.gg.commonservice.advice.exceptions.NoMemberException;
 import com.gg.commonservice.advice.exceptions.NotFoundException;
 import com.gg.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.commonservice.dto.account.AccountDto;
+import com.gg.commonservice.dto.mail.EmailMessage;
 import com.gg.commonservice.enums.LoginType;
 import com.gg.commonservice.properties.KafkaUserTopicProperties;
 import com.gg.commonservice.security.CredentialInfo;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 @BaseServiceAnnotation
 @RequiredArgsConstructor
@@ -48,7 +50,6 @@ public class AccountService {
         String authCode = sendSignUpConfirmEmail(accountSaveForm.getEmail());
         Account account = Account.createAccountByFormAndAuthCode(accountSaveForm, authCode);
         accountRepository.save(account);
-        // kafkaAccountProducer.send(kafkaUserTopicProperties.getAccountTopic(), accountDto);
         return CustomAccountDto.from(account);
     }
 
@@ -143,4 +144,15 @@ public class AccountService {
         return CustomAccountDto.from(accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new));
     }
 
+    /**
+     * 메일 발송 실패시 삭제
+     *
+     * @param emailMessage : 이메일 메시지 객체
+     */
+    @Transactional
+    public void sendEmailFail(EmailMessage emailMessage) {
+        String accountId = emailMessage.getAccountId();
+        Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
+        accountRepository.delete(account);
+    }
 }
