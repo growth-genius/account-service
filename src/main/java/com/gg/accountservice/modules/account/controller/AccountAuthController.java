@@ -41,7 +41,7 @@ public class AccountAuthController {
     }
 
     @PostMapping("/resend/authcode")
-    public ApiResult<AccountDto> resendAuthCode(@RequestBody @Valid ResendAuthForm authCodeForm) {
+    public ApiResult<Boolean> resendAuthCode(@RequestBody @Valid ResendAuthForm authCodeForm) {
         return ApiUtil.success(accountService.resendAuthCode(authCodeForm));
     }
 
