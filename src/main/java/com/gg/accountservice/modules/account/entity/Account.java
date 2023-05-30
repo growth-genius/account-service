@@ -78,6 +78,9 @@ public class Account extends UpdatedEntity {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.VERIFY_EMAIL;
 
+    /** 이메일 전송일자 */
+    private LocalDateTime emailAt;
+
     /** 프로필 이미지 */
     @Lob
     @Basic
@@ -95,13 +98,6 @@ public class Account extends UpdatedEntity {
     /** 마지막 로그인 일자 */
     private LocalDateTime lastLoginAt;
 
-
-    // 테스트 용도
-    public static Account createForTest(String email) {
-        Account account = new Account();
-        account.email = email;
-        return account;
-    }
 
     /** 로그인 후 세팅 */
     public void afterLoginSuccess() {
@@ -142,10 +138,9 @@ public class Account extends UpdatedEntity {
      * 입력 데이터로 Account 계정 생성
      *
      * @param accountSaveForm Account 입력 form
-     * @param authCode        메일 인증 코드
      * @return 계정 entity
      */
-    public static Account createAccountByFormAndAuthCode(AccountSaveForm accountSaveForm, String authCode) {
+    public static Account createAccount(AccountSaveForm accountSaveForm) {
         Account account = new Account();
         account.accountId = UUID.randomUUID().toString();
         account.username = accountSaveForm.getUsername();
@@ -156,9 +151,13 @@ public class Account extends UpdatedEntity {
         account.profileImage = accountSaveForm.getProfileImage();
         account.loginType = LoginType.TGAHTER;
         account.joinedAt = LocalDateTime.now();
-        account.authCode = authCode;
         account.authCodeModifiedAt = LocalDateTime.now();
         return account;
     }
 
+    public void updateAuthCode(String authCode) {
+        this.accountStatus = AccountStatus.VERIFY_EMAIL;
+        this.authCode = authCode;
+        this.emailAt = LocalDateTime.now();
+    }
 }
