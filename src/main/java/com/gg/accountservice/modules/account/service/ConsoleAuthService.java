@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Profile({"local", "test"})
+@Profile({"local", "test", "default"})
 @Component
 public class ConsoleAuthService implements AuthService {
 
