@@ -114,7 +114,7 @@ public class AccountService {
      * @return AccountDto 계정 Dto
      */
     public AccountDto login(String email, CredentialInfo credential) {
-        Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(NoMemberException::new);
 
         if (account.getAccountStatus() == AccountStatus.VERIFY_EMAIL) {
             throw new RequiredAuthAccountException("이메일에 전송된 인증코드를 확인해주세요.");
@@ -132,8 +132,7 @@ public class AccountService {
      * @return AccountDto 인증 확인 AccountDto
      */
     public AccountDto validAuthCode(AuthCodeForm authCodeForm) {
-        Account account = accountRepository.findByEmailAndLoginType(authCodeForm.getEmail(), LoginType.TGAHTER)
-            .orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByEmailAndLoginType(authCodeForm.getEmail(), LoginType.TGAHTER).orElseThrow(NoMemberException::new);
 
         if (!account.getAuthCode().equals(authCodeForm.getAuthCode())) {
             throw new BadCredentialsException("인증 코드가 잘못되었습니다. 다시 확인해주세요.");
@@ -179,7 +178,7 @@ public class AccountService {
      * @return CustomAccountDto
      */
     public Boolean resendAuthCode(ResendAuthForm resendAuthForm) {
-        Account account = accountRepository.findByEmail(resendAuthForm.getEmail()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByEmail(resendAuthForm.getEmail()).orElseThrow(NoMemberException::new);
         String authCode = sendSignUpConfirmEmail(resendAuthForm.getEmail(), resendAuthForm.getAccountId());
         account.updateAuthCode(authCode);
         return true;
@@ -193,7 +192,7 @@ public class AccountService {
      * @return
      */
     public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
-        Account account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         account.modifyAccountInfo(modifyAccountForm);
         return CustomAccountDto.from(account);
     }
