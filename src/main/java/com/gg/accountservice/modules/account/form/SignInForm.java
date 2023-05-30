@@ -3,12 +3,10 @@ package com.gg.accountservice.modules.account.form;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class SignInForm {
 
     @NotNull(message = "이메일을 입력해 주세요.")
