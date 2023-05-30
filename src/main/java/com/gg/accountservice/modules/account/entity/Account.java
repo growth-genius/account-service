@@ -149,6 +149,7 @@ public class Account extends UpdatedEntity {
         account.birth = accountSaveForm.getBirth();
         account.nickname = accountSaveForm.getNickname();
         account.profileImage = accountSaveForm.getProfileImage();
+        account.travelThemes = accountSaveForm.getTravelTheme();
         account.loginType = LoginType.TGAHTER;
         account.joinedAt = LocalDateTime.now();
         account.authCodeModifiedAt = LocalDateTime.now();
