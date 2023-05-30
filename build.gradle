@@ -9,6 +9,7 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'nu.studer.credentials' version '3.0'
 }
 
 group = 'com.gg'
@@ -21,13 +22,17 @@ configurations {
     }
 }
 
+def repoUsername = credentials.forKey('repoUsername')
+def repoPassword = credentials.forKey('repoPassword')
+def nexusBaseUrl = credentials.forKey('nexusBaseUrl')
+
 repositories {
     mavenCentral()
     maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
     maven {
-        credentials {
-            username = repoUsername    // System.getenv("NEXUS_ID") : 추후 하드코딩이 아닌 환경설정으로 처리
-            password = repoPassword   // System.getenv("NEXUS_PASSWORD")
+        credentials(PasswordCredentials) {
+            username = repoUsername
+            password = repoPassword
         }
         url "${nexusBaseUrl}/tgather-public/"
         allowInsecureProtocol = true    // http 허용, https로 변경하면 필요없음.
