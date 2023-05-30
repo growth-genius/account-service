@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    activate:
+      on-profile: test
+  cloud:
+    config:
+      uri: http://sgyj-dev.synology.me:8888
+      name: test, ecommerce, common, zipkin
