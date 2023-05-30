@@ -1,6 +1,5 @@
 package com.gg.accountservice.modules.account.controller;
 
-import com.gg.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.accountservice.modules.account.form.AuthCodeForm;
 import com.gg.accountservice.modules.account.form.ResendAuthForm;
@@ -42,7 +41,7 @@ public class AccountAuthController {
     }
 
     @PostMapping("/resend/authcode")
-    public ApiResult<CustomAccountDto> resendAuthCode(@RequestBody @Valid ResendAuthForm authCodeForm) {
+    public ApiResult<AccountDto> resendAuthCode(@RequestBody @Valid ResendAuthForm authCodeForm) {
         return ApiUtil.success(accountService.resendAuthCode(authCodeForm));
     }
 
@@ -50,5 +49,6 @@ public class AccountAuthController {
     public ApiResult<Boolean> authNickname(@PathVariable String nickname) {
         return ApiUtil.success(accountService.validNickname(nickname));
     }
+
 
 }
