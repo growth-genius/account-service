@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import com.gg.accountservice.modules.account.enums.AccountStatus;
 import com.gg.accountservice.modules.account.enums.TravelTheme;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
+import com.gg.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.commonservice.advice.exceptions.BadRequestException;
 import com.gg.commonservice.enums.AccountRole;
 import com.gg.commonservice.enums.ErrorMessage;
@@ -28,10 +29,12 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends UpdatedEntity {
 
@@ -96,13 +99,6 @@ public class Account extends UpdatedEntity {
     private LocalDateTime lastLoginAt;
 
 
-    // 테스트 용도
-    public static Account createForTest(String email) {
-        Account account = new Account();
-        account.email = email;
-        return account;
-    }
-
     /** 로그인 후 세팅 */
     public void afterLoginSuccess() {
         this.loginFailCount = 0;
@@ -142,10 +138,9 @@ public class Account extends UpdatedEntity {
      * 입력 데이터로 Account 계정 생성
      *
      * @param accountSaveForm Account 입력 form
-     * @param authCode        메일 인증 코드
      * @return 계정 entity
      */
-    public static Account createAccountByFormAndAuthCode(AccountSaveForm accountSaveForm, String authCode) {
+    public static Account createAccount(AccountSaveForm accountSaveForm) {
         Account account = new Account();
         account.accountId = UUID.randomUUID().toString();
         account.username = accountSaveForm.getUsername();
@@ -154,11 +149,22 @@ public class Account extends UpdatedEntity {
         account.birth = accountSaveForm.getBirth();
         account.nickname = accountSaveForm.getNickname();
         account.profileImage = accountSaveForm.getProfileImage();
+        account.travelThemes = accountSaveForm.getTravelThemes();
         account.loginType = LoginType.TGAHTER;
         account.joinedAt = LocalDateTime.now();
-        account.authCode = authCode;
         account.authCodeModifiedAt = LocalDateTime.now();
         return account;
     }
 
+    public void updateAuthCode(String authCode) {
+        this.accountStatus = AccountStatus.VERIFY_EMAIL;
+        this.authCode = authCode;
+    }
+
+    public void modifyAccountInfo(ModifyAccountForm modifyAccountForm) {
+        this.nickname = modifyAccountForm.getNickname();
+        this.travelThemes = modifyAccountForm.getTravelThemes();
+        this.username = modifyAccountForm.getUsername();
+        this.profileImage = modifyAccountForm.getProfileImage();
+    }
 }

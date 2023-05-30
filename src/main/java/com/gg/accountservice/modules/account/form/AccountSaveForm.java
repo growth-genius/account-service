@@ -1,9 +1,12 @@
 package com.gg.accountservice.modules.account.form;
 
+import com.gg.accountservice.modules.account.enums.TravelTheme;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -23,6 +26,8 @@ public class AccountSaveForm {
 
     @NotNull(message = "이메일을 입력해 주세요.")
     @Email(message = "이메일 형식이 올바르지 않습니다.")
+    @Max(value = 320, message = "유효한 이메일 주소 길이를 벗어났습니다.")
     private String email;
 
+    private Set<TravelTheme> travelThemes;
 }

@@ -45,7 +45,7 @@ ext {
 }
 
 dependencies {
-    implementation 'com.gg:common-service:1.0.0'
+    implementation 'com.gg:common-service:1.0.1'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'

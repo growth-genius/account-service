@@ -4,27 +4,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gg.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.accountservice.modules.account.dto.TokenDto;
 import com.gg.accountservice.modules.account.entity.Account;
+import com.gg.accountservice.modules.account.enums.AccountStatus;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.accountservice.modules.account.form.ModifyAccountForm;
+import com.gg.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.accountservice.modules.account.repository.AccountRepository;
 import com.gg.accountservice.modules.account.service.kafka.KafkaEmailProducer;
 import com.gg.commonservice.advice.exceptions.ExpiredTokenException;
 import com.gg.commonservice.advice.exceptions.NoMemberException;
 import com.gg.commonservice.advice.exceptions.NotFoundException;
+import com.gg.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.commonservice.dto.account.AccountDto;
 import com.gg.commonservice.dto.mail.EmailMessage;
+import com.gg.commonservice.dto.mail.MailSubject;
 import com.gg.commonservice.enums.LoginType;
 import com.gg.commonservice.properties.KafkaUserTopicProperties;
 import com.gg.commonservice.security.CredentialInfo;
 import com.gg.commonservice.security.Jwt;
 import com.gg.commonservice.security.Jwt.Claims;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @BaseServiceAnnotation
 @RequiredArgsConstructor
 public class AccountService {
@@ -34,6 +40,7 @@ public class AccountService {
     private final Jwt jwt;
     private final KafkaEmailProducer kafkaEmailProducer;
     private final KafkaUserTopicProperties kafkaUserTopicProperties;
+    private final AuthService authService;
 
     /**
      * 2
@@ -42,13 +49,13 @@ public class AccountService {
      * @param accountSaveForm account 저장 폼
      * @return AccountDto account 생성 결과 Dto
      */
-    public AccountDto saveAccount(AccountSaveForm accountSaveForm) throws JsonProcessingException {
+    public AccountDto saveAccount(AccountSaveForm accountSaveForm) {
         accountSaveForm.setPassword(passwordEncoder.encode(accountSaveForm.getPassword()));
 
         validateAccount(accountSaveForm);
-
-        String authCode = sendSignUpConfirmEmail(accountSaveForm.getEmail());
-        Account account = Account.createAccountByFormAndAuthCode(accountSaveForm, authCode);
+        Account account = Account.createAccount(accountSaveForm);
+        String authCode = sendSignUpConfirmEmail(account.getEmail(), account.getAccountId());
+        account.updateAuthCode(authCode);
         accountRepository.save(account);
         return CustomAccountDto.from(account);
     }
@@ -59,9 +66,16 @@ public class AccountService {
      * @param email 이메일
      * @return authCode 인증코드
      */
-    private String sendSignUpConfirmEmail(String email) throws JsonProcessingException {
-        String authCode = RandomStringUtils.randomAlphanumeric(12);
-        // kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(), new EmailMessage(email, "제목", authCode));
+    private String sendSignUpConfirmEmail(String email, String accountId) {
+        String authCode = authService.createAuthCode();
+
+        try {
+            kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(),
+                EmailMessage.builder().accountId(accountId).to(email).message(authCode).mailSubject(MailSubject.VALID_AUTHENTICATION_ACCOUNT).build());
+        } catch (JsonProcessingException e) {
+            log.error("Fail to Send Email");
+        }
+
         return authCode;
     }
 
@@ -100,7 +114,12 @@ public class AccountService {
      * @return AccountDto 계정 Dto
      */
     public AccountDto login(String email, CredentialInfo credential) {
-        Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(NoMemberException::new);
+
+        if (account.getAccountStatus() == AccountStatus.VERIFY_EMAIL) {
+            throw new RequiredAuthAccountException("이메일에 전송된 인증코드를 확인해주세요.");
+        }
+
         account.login(passwordEncoder, credential.getCredential());
         account.afterLoginSuccess();
         return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
@@ -113,8 +132,7 @@ public class AccountService {
      * @return AccountDto 인증 확인 AccountDto
      */
     public AccountDto validAuthCode(AuthCodeForm authCodeForm) {
-        Account account = accountRepository.findByEmailAndLoginType(authCodeForm.getEmail(), LoginType.TGAHTER)
-            .orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        Account account = accountRepository.findByEmailAndLoginType(authCodeForm.getEmail(), LoginType.TGAHTER).orElseThrow(NoMemberException::new);
 
         if (!account.getAuthCode().equals(authCodeForm.getAuthCode())) {
             throw new BadCredentialsException("인증 코드가 잘못되었습니다. 다시 확인해주세요.");
@@ -154,5 +172,31 @@ public class AccountService {
         String accountId = emailMessage.getAccountId();
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         accountRepository.delete(account);
+    }
+
+    /**
+     * 인증코드 재발송
+     *
+     * @param resendAuthForm 인증 코드 재발송 Form
+     * @return CustomAccountDto
+     */
+    public Boolean resendAuthCode(ResendAuthForm resendAuthForm) {
+        Account account = accountRepository.findByEmail(resendAuthForm.getEmail()).orElseThrow(NoMemberException::new);
+        String authCode = sendSignUpConfirmEmail(resendAuthForm.getEmail(), resendAuthForm.getAccountId());
+        account.updateAuthCode(authCode);
+        return true;
+    }
+
+    /**
+     * 사용자 정보 수정
+     *
+     * @param accountId
+     * @param modifyAccountForm
+     * @return
+     */
+    public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
+        Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
+        account.modifyAccountInfo(modifyAccountForm);
+        return CustomAccountDto.from(account);
     }
 }
