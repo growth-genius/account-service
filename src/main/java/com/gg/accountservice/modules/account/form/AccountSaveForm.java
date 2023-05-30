@@ -1,9 +1,11 @@
 package com.gg.accountservice.modules.account.form;
 
+import com.gg.accountservice.modules.account.enums.TravelTheme;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -25,4 +27,5 @@ public class AccountSaveForm {
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
+    private Set<TravelTheme> travelTheme;
 }
