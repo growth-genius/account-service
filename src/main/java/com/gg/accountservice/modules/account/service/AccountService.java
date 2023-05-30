@@ -168,11 +168,11 @@ public class AccountService {
      * @param resendAuthForm 인증 코드 재발송 Form
      * @return CustomAccountDto
      */
-    public CustomAccountDto resendAuthCode(ResendAuthForm resendAuthForm) {
+    public Boolean resendAuthCode(ResendAuthForm resendAuthForm) {
         Account account = accountRepository.findByEmail(resendAuthForm.getEmail()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
         String authCode = sendSignUpConfirmEmail(resendAuthForm.getEmail(), resendAuthForm.getAccountId());
         account.updateAuthCode(authCode);
-        return CustomAccountDto.from(account);
+        return true;
     }
 
     /**
