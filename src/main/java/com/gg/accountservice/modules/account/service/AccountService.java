@@ -7,6 +7,7 @@ import com.gg.accountservice.modules.account.entity.Account;
 import com.gg.accountservice.modules.account.enums.AccountStatus;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.accountservice.modules.account.repository.AccountRepository;
 import com.gg.accountservice.modules.account.service.kafka.KafkaEmailProducer;
@@ -171,6 +172,19 @@ public class AccountService {
         Account account = accountRepository.findByEmail(resendAuthForm.getEmail()).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
         String authCode = sendSignUpConfirmEmail(resendAuthForm.getEmail(), resendAuthForm.getAccountId());
         account.updateAuthCode(authCode);
+        return CustomAccountDto.from(account);
+    }
+
+    /**
+     * 사용자 정보 수정
+     *
+     * @param accountId
+     * @param modifyAccountForm
+     * @return
+     */
+    public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
+        Account account = accountRepository.findByAccountId(accountId).orElseThrow(() -> new NotFoundException("등록된 계정이 없습니다."));
+        account.modifyAccountInfo(modifyAccountForm);
         return CustomAccountDto.from(account);
     }
 }

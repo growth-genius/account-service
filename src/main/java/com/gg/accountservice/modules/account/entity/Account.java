@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import com.gg.accountservice.modules.account.enums.AccountStatus;
 import com.gg.accountservice.modules.account.enums.TravelTheme;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
+import com.gg.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.commonservice.advice.exceptions.BadRequestException;
 import com.gg.commonservice.enums.AccountRole;
 import com.gg.commonservice.enums.ErrorMessage;
@@ -28,10 +29,12 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends UpdatedEntity {
 
@@ -149,7 +152,7 @@ public class Account extends UpdatedEntity {
         account.birth = accountSaveForm.getBirth();
         account.nickname = accountSaveForm.getNickname();
         account.profileImage = accountSaveForm.getProfileImage();
-        account.travelThemes = accountSaveForm.getTravelTheme();
+        account.travelThemes = accountSaveForm.getTravelThemes();
         account.loginType = LoginType.TGAHTER;
         account.joinedAt = LocalDateTime.now();
         account.authCodeModifiedAt = LocalDateTime.now();
@@ -160,5 +163,12 @@ public class Account extends UpdatedEntity {
         this.accountStatus = AccountStatus.VERIFY_EMAIL;
         this.authCode = authCode;
         this.emailAt = LocalDateTime.now();
+    }
+
+    public void modifyAccountInfo(ModifyAccountForm modifyAccountForm) {
+        this.nickname = modifyAccountForm.getNickname();
+        this.travelThemes = modifyAccountForm.getTravelThemes();
+        this.username = modifyAccountForm.getUsername();
+        this.profileImage = modifyAccountForm.getProfileImage();
     }
 }
