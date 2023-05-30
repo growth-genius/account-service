@@ -1,4 +1,4 @@
-package com.gg;
+package com.gg.accountservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
