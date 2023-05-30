@@ -81,9 +81,6 @@ public class Account extends UpdatedEntity {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.VERIFY_EMAIL;
 
-    /** 이메일 전송일자 */
-    private LocalDateTime emailAt;
-
     /** 프로필 이미지 */
     @Lob
     @Basic
@@ -162,7 +159,6 @@ public class Account extends UpdatedEntity {
     public void updateAuthCode(String authCode) {
         this.accountStatus = AccountStatus.VERIFY_EMAIL;
         this.authCode = authCode;
-        this.emailAt = LocalDateTime.now();
     }
 
     public void modifyAccountInfo(ModifyAccountForm modifyAccountForm) {
