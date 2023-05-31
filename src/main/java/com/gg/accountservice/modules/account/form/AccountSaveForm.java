@@ -1,6 +1,6 @@
 package com.gg.accountservice.modules.account.form;
 
-import com.gg.accountservice.modules.account.enums.TravelTheme;
+import com.gg.commonservice.enums.TravelTheme;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
