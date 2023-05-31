@@ -10,7 +10,7 @@ import com.gg.commonservice.security.Jwt;
 public class CustomAccountDto extends AccountDto {
 
     private CustomAccountDto(Account account) {
-        copyProperties(account, this);
+        copyProperties(account, this, "password");
     }
 
     public static CustomAccountDto from(Account account) {
