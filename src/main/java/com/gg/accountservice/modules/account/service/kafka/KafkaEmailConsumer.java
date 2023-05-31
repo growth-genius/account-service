@@ -18,7 +18,7 @@ public class KafkaEmailConsumer {
     private final AccountService accountService;
 
 
-    @KafkaListener(topics = "${kafka.user-topic.mail.send-email-fail}")
+    @KafkaListener(topics = "${kafka.email-topic.send-email-fail}")
     public void sendEmailFail(String kafkaMessage) throws JsonProcessingException {
         log.error("메일 전송 실패 : {}", kafkaMessage);
         EmailMessage emailMessage = objectMapper.readValue(kafkaMessage, EmailMessage.class);
