@@ -3,13 +3,13 @@ package com.gg.accountservice.modules.account.entity;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.gg.accountservice.modules.account.enums.AccountStatus;
-import com.gg.accountservice.modules.account.enums.TravelTheme;
 import com.gg.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.commonservice.advice.exceptions.BadRequestException;
 import com.gg.commonservice.enums.AccountRole;
 import com.gg.commonservice.enums.ErrorMessage;
 import com.gg.commonservice.enums.LoginType;
+import com.gg.commonservice.enums.TravelTheme;
 import com.gg.commonservice.jpa.UpdatedEntity;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CollectionTable;
@@ -23,6 +23,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -36,8 +38,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NamedEntityGraph(name = "Account.withRolesAndTravelThemes", attributeNodes = {@NamedAttributeNode("roles"), @NamedAttributeNode("travelThemes")})
 public class Account extends UpdatedEntity {
-
 
     /* 아이디 */
     @Id
@@ -167,4 +169,5 @@ public class Account extends UpdatedEntity {
         this.username = modifyAccountForm.getUsername();
         this.profileImage = modifyAccountForm.getProfileImage();
     }
+
 }
