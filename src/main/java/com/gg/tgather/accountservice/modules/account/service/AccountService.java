@@ -194,9 +194,11 @@ public class AccountService {
      * @param modifyAccountForm
      * @return
      */
+    @Transactional
     public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         account.modifyAccountInfo(modifyAccountForm);
         return CustomAccountDto.from(account);
     }
+
 }
