@@ -171,7 +171,7 @@ public class AccountService {
     public void sendEmailFail(EmailMessage emailMessage) {
         String accountId = emailMessage.getAccountId();
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
-        accountRepository.delete(account);
+        account.disableAccount();
     }
 
     /**

@@ -170,4 +170,7 @@ public class Account extends UpdatedEntity {
         this.profileImage = modifyAccountForm.getProfileImage();
     }
 
+    public void disableAccount() {
+        this.accountStatus = AccountStatus.FAIL_EMAIL;
+    }
 }
