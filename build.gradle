@@ -12,7 +12,7 @@ plugins {
     id 'nu.studer.credentials' version '3.0'
 }
 
-group = 'com.gg'
+group = 'com.gg.tgather'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -45,7 +45,7 @@ ext {
 }
 
 dependencies {
-    implementation 'com.gg:common-service:1.0.3'
+    implementation 'com.gg.tgather:common-service:1.0.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
@@ -103,6 +103,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
     testImplementation 'org.mockito:mockito-inline:4.7.0'
+
 }
 
 dependencyManagement {

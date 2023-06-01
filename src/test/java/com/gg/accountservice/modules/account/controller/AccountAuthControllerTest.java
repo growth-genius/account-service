@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.gg.accountservice.infra.annotation.MockMvcTest;
 import com.gg.accountservice.infra.container.AbstractContainerMvcTest;
-import com.gg.accountservice.modules.account.form.AccountSaveForm;
-import com.gg.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.accountservice.modules.account.service.AccountService;
+import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
+import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

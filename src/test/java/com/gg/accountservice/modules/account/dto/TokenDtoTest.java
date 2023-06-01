@@ -2,6 +2,7 @@ package com.gg.accountservice.modules.account.dto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

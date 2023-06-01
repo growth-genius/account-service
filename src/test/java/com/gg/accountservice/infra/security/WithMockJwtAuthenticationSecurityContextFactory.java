@@ -1,8 +1,8 @@
 package com.gg.accountservice.infra.security;
 
-import com.gg.commonservice.enums.AccountRole;
-import com.gg.commonservice.security.JwtAuthentication;
-import com.gg.commonservice.security.JwtAuthenticationToken;
+import com.gg.tgather.commonservice.enums.AccountRole;
+import com.gg.tgather.commonservice.security.JwtAuthentication;
+import com.gg.tgather.commonservice.security.JwtAuthenticationToken;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
