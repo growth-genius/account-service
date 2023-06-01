@@ -1,4 +1,4 @@
-package com.gg.accountservice.infra.container;
+package com.gg.tgather.accountservice.infra.container;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

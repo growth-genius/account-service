@@ -1,4 +1,4 @@
-package com.gg.accountservice.infra.container;
+package com.gg.tgather.accountservice.infra.container;
 
 import lombok.RequiredArgsConstructor;
 import org.testcontainers.containers.PostgreSQLContainer;
