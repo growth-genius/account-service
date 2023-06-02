@@ -13,6 +13,14 @@ spring:
     url: jdbc:tc:postgresql:///commons-test
   flyway:
     enabled: false
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+    bootstrap-servers-config: 127.0.0.1:9092
+    group-id-config: account-service
+    email-topic:
+      send-email-fail-topic: send_mail_fail_topic
+      send-email-success-topic: send_mail_success_topic
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}

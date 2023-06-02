@@ -21,12 +21,11 @@ eureka:
     register-with-eureka: true # eureka
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+      defaultZone: http://sgyj-dev.synology.me:8761/eureka
 
 logging:
   level:
     com.gg.accountservice: DEBUG
 
-
 kafka:
-  bootstrap-servers-config: 172.0.0.1:9092
+  bootstrap-servers-config: 127.0.0.1:9092

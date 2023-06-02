@@ -1,5 +1,5 @@
 spring:
   cloud:
     config:
-      uri: http://127.0.0.1:8888
+      uri: http://sgyj-dev.synology.me:8888
       name: account-service, ecommerce, common, zipkin
