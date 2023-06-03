@@ -50,8 +50,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.httpBasic().disable().csrf().disable().cors().disable().exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
             .authenticationEntryPoint(unAuthorizedHandler).and().headers().frameOptions().sameOrigin().and().sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests().anyRequest().permitAll().and()
-            .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeHttpRequests()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll().and().authorizeHttpRequests().anyRequest().permitAll()
+            .and().addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
