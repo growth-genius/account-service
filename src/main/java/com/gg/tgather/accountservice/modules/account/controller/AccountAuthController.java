@@ -52,7 +52,7 @@ public class AccountAuthController {
         return ApiUtil.success(accountService.validNickname(nickname));
     }
 
-    @GetMapping("/check-email/{email}")
+    @GetMapping("/check-email")
     public ApiResult<Boolean> validEmailAddress(@RequestBody @Valid EmailAuthForm emailAuthForm) {
         return ApiUtil.success(accountService.validEmailAddress(emailAuthForm));
     }
