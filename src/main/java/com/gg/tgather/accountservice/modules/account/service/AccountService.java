@@ -7,6 +7,7 @@ import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.EmailAuthForm;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
@@ -190,13 +191,23 @@ public class AccountService {
     /**
      * 사용자 정보 수정
      *
-     * @param accountId
-     * @param modifyAccountForm
-     * @return
+     * @param accountId         계정고유아이디
+     * @param modifyAccountForm 계정수정폼
+     * @return customAccountDto 수정된 accountDto
      */
     public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         account.modifyAccountInfo(modifyAccountForm);
         return CustomAccountDto.from(account);
+    }
+
+    /**
+     * 이메일 유효성 여부 확인
+     *
+     * @param emailAuthForm 이메일 인증 폼
+     * @return boolean 이메일 유효성 결과
+     */
+    public Boolean validEmailAddress(EmailAuthForm emailAuthForm) {
+        return accountRepository.findByEmail(emailAuthForm.getEmail()).isPresent();
     }
 }

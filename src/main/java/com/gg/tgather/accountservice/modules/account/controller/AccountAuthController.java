@@ -1,15 +1,16 @@
 package com.gg.tgather.accountservice.modules.account.controller;
 
+import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
+import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.EmailAuthForm;
+import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
+import com.gg.tgather.accountservice.modules.account.form.SignInForm;
+import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import com.gg.tgather.commonservice.annotation.RestBaseAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.security.CredentialInfo;
 import com.gg.tgather.commonservice.utils.ApiUtil;
 import com.gg.tgather.commonservice.utils.ApiUtil.ApiResult;
-import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
-import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
-import com.gg.tgather.accountservice.modules.account.form.SignInForm;
-import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,9 @@ public class AccountAuthController {
         return ApiUtil.success(accountService.saveAccount(accountSaveForm));
     }
 
-    @PostMapping("/check-email")
-    public ApiResult<AccountDto> validEmailAddress(@RequestBody @Valid AuthCodeForm authCodeForm) {
+
+    @PostMapping("/confirm-authcode")
+    public ApiResult<AccountDto> validEmailByAuthCode(@RequestBody @Valid AuthCodeForm authCodeForm) {
         return ApiUtil.success(accountService.validAuthCode(authCodeForm));
     }
 
@@ -50,5 +52,9 @@ public class AccountAuthController {
         return ApiUtil.success(accountService.validNickname(nickname));
     }
 
+    @GetMapping("/check-email/{email}")
+    public ApiResult<Boolean> validEmailAddress(@RequestBody @Valid EmailAuthForm emailAuthForm) {
+        return ApiUtil.success(accountService.validEmailAddress(emailAuthForm));
+    }
 
 }
