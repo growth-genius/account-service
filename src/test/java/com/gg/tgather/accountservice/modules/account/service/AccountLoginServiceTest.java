@@ -3,7 +3,7 @@ package com.gg.tgather.accountservice.modules.account.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.gg.tgather.accountservice.infra.annotation.ServiceTestNoRollback;
+import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
 import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
@@ -12,15 +12,16 @@ import com.gg.tgather.accountservice.modules.account.repository.AccountRepositor
 import com.gg.tgather.accountservice.modules.account.util.AccountTestUtil;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.security.CredentialInfo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 이메일 인증 성공 후, 로그인 테스트
+ * 사용자 로그인 후, 정보수정 테스트
  */
-@ServiceTestNoRollback
+@ServiceTest
 class AccountLoginServiceTest extends AbstractContainerBaseTest {
 
     @Autowired
@@ -29,7 +30,8 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
     @Autowired
     private AccountRepository accountRepository;
 
-    public void successAuthAccount() {
+    @BeforeEach
+    void successAuthAccount() {
         accountService.saveAccount(AccountTestUtil.createAccountSaveFormWithEmailSample2());
         accountService.validAuthCode(AccountTestUtil.createResendAuthFormWithEmailSample2());
     }
@@ -39,7 +41,6 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
     @DisplayName("로그인 성공 확인")
     void successLogin() {
         // given
-        successAuthAccount();
         CredentialInfo credentialInfo = new CredentialInfo(AccountTestUtil.emailSample2Password);
         // when
         AccountDto loginAccount = accountService.login(AccountTestUtil.emailSample2, credentialInfo);
@@ -64,4 +65,5 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
         assertNotNull(customAccountDto.getAccountId());
 
     }
+
 }

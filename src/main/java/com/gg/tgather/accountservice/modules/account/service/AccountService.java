@@ -7,7 +7,6 @@ import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.tgather.accountservice.modules.account.form.EmailAuthForm;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
@@ -15,6 +14,7 @@ import com.gg.tgather.accountservice.modules.account.service.kafka.KafkaEmailPro
 import com.gg.tgather.commonservice.advice.exceptions.ExpiredTokenException;
 import com.gg.tgather.commonservice.advice.exceptions.NoMemberException;
 import com.gg.tgather.commonservice.advice.exceptions.NotFoundException;
+import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
 import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
@@ -27,10 +27,17 @@ import com.gg.tgather.commonservice.security.Jwt;
 import com.gg.tgather.commonservice.security.Jwt.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Account CRUD 프로세스
+ *
+ * @author joyeji
+ * @since 2023.06.05
+ */
 @Slf4j
 @BaseServiceAnnotation
 @RequiredArgsConstructor
@@ -203,10 +210,15 @@ public class AccountService {
     /**
      * 이메일 유효성 여부 확인
      *
-     * @param emailAuthForm 이메일 인증 폼
+     * @param email 이메일 인증 폼
      * @return boolean 이메일 유효성 결과
      */
-    public Boolean validEmailAddress(EmailAuthForm emailAuthForm) {
-        return accountRepository.findByEmail(emailAuthForm.getEmail()).isPresent();
+    public Boolean validEmailAddress(String email) {
+        boolean validEmail = EmailValidator.getInstance().isValid(email);
+        if (!validEmail) {
+            throw new OmittedRequireFieldException("이메일 형식이 올바르지 않습니다.");
+        }
+
+        return accountRepository.findByEmail(email).isPresent();
     }
 }
