@@ -3,6 +3,7 @@ package com.gg.tgather.accountservice.modules.account.service;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample2;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample1;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample2;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.nickname;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,6 +14,7 @@ import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.EmailAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
@@ -32,17 +34,15 @@ class AccountServiceTest extends AbstractContainerBaseTest {
 
     @Autowired
     private AccountRepository accountRepository;
-
-
-    public Account saveAccount() {
-
-        return accountRepository.save(Account.createAccount(createAccountSaveFormWithEmailSample2()));
+    
+    private void saveAccount() {
+        accountRepository.save(Account.createAccount(createAccountSaveFormWithEmailSample2()));
     }
 
     @Test
     @Order(0)
     @DisplayName("닉네임 중복 여부 확인")
-    void validEmail() {
+    void validNickname() {
         // given
         saveAccount();
         // when
@@ -52,10 +52,22 @@ class AccountServiceTest extends AbstractContainerBaseTest {
     }
 
     @Test
+    @Order(0)
+    @DisplayName("이메일 중복 여부 확인")
+    void validEmail() {
+        // given
+        EmailAuthForm authForm = EmailAuthForm.createFormForTest(emailSample2);
+        // when
+        Boolean validEmailAddress = accountService.validEmailAddress(authForm);
+        // then
+        assertTrue(validEmailAddress);
+    }
+
+
+    @Test
     @Order(1)
     @DisplayName("회원가입 확인")
     void test_case_1() {
-
         AccountDto accountDto = accountService.saveAccount(createAccountSaveFormWithEmailSample1());
         assertEquals(emailSample1, accountDto.getEmail());
     }
