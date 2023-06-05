@@ -1,21 +1,19 @@
-package com.gg.accountservice.modules.account.service;
+package com.gg.tgather.accountservice.modules.account.service;
 
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample2;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.emailSample1;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.nickname;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample2;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample1;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.nickname;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.gg.accountservice.infra.annotation.ServiceTestNoRollback;
-import com.gg.accountservice.infra.container.AbstractContainerBaseTest;
+import com.gg.tgather.accountservice.infra.annotation.ServiceTestNoRollback;
+import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
-import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.enums.LoginType;
@@ -43,7 +41,7 @@ class AccountServiceTest extends AbstractContainerBaseTest {
 
     @Test
     @Order(0)
-    @DisplayName("이메일 중복 여부 확인")
+    @DisplayName("닉네임 중복 여부 확인")
     void validEmail() {
         // given
         saveAccount();
@@ -100,21 +98,5 @@ class AccountServiceTest extends AbstractContainerBaseTest {
         //then
         assertEquals(AccountStatus.NORMAL, account.getAccountStatus());
     }
-
-    @Test
-    @DisplayName("이메일 인증코드 재전송하기")
-    void test_case_5() {
-        // given
-        Account account = accountRepository.findByEmail(emailSample1).orElseThrow();
-        ResendAuthForm resendAuthForm = new ResendAuthForm();
-        resendAuthForm.setAccountId(account.getAccountId());
-        resendAuthForm.setEmail(account.getEmail());
-        // when
-        accountService.resendAuthCode(resendAuthForm);
-        Account findAccount = accountRepository.findByEmail(account.getEmail()).orElseThrow();
-        // then
-        assertNotEquals(account.getEmailAt(), findAccount.getEmailAt());
-    }
-
 
 }

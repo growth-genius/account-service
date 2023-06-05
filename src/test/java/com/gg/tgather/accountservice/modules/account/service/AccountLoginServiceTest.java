@@ -1,20 +1,17 @@
-package com.gg.accountservice.modules.account.service;
+package com.gg.tgather.accountservice.modules.account.service;
 
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample2;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.createResendAuthFormWithEmailSample2;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.emailSample2;
-import static com.gg.accountservice.modules.account.util.AccountTestUtil.emailSample2Password;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.gg.accountservice.infra.annotation.ServiceTestNoRollback;
-import com.gg.accountservice.infra.container.AbstractContainerBaseTest;
-import com.gg.tgather.commonservice.dto.account.AccountDto;
-import com.gg.tgather.commonservice.security.CredentialInfo;
+import com.gg.tgather.accountservice.infra.annotation.ServiceTestNoRollback;
+import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
-import com.gg.tgather.accountservice.modules.account.service.AccountService;
+import com.gg.tgather.accountservice.modules.account.util.AccountTestUtil;
+import com.gg.tgather.commonservice.dto.account.AccountDto;
+import com.gg.tgather.commonservice.security.CredentialInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -33,8 +30,8 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
     private AccountRepository accountRepository;
 
     public void successAuthAccount() {
-        accountService.saveAccount(createAccountSaveFormWithEmailSample2());
-        accountService.validAuthCode(createResendAuthFormWithEmailSample2());
+        accountService.saveAccount(AccountTestUtil.createAccountSaveFormWithEmailSample2());
+        accountService.validAuthCode(AccountTestUtil.createResendAuthFormWithEmailSample2());
     }
 
     @Test
@@ -43,9 +40,9 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
     void successLogin() {
         // given
         successAuthAccount();
-        CredentialInfo credentialInfo = new CredentialInfo(emailSample2Password);
+        CredentialInfo credentialInfo = new CredentialInfo(AccountTestUtil.emailSample2Password);
         // when
-        AccountDto loginAccount = accountService.login(emailSample2, credentialInfo);
+        AccountDto loginAccount = accountService.login(AccountTestUtil.emailSample2, credentialInfo);
         // then
         assertEquals(1, loginAccount.getLoginCount());
         assertNotNull(loginAccount.getRefreshToken());
@@ -59,7 +56,7 @@ class AccountLoginServiceTest extends AbstractContainerBaseTest {
         ModifyAccountForm modifyAccountForm = new ModifyAccountForm();
         String revisedNickname = "낑깡";
         modifyAccountForm.setNickname(revisedNickname);
-        Account account = accountRepository.findByEmail(emailSample2).orElseThrow();
+        Account account = accountRepository.findByEmail(AccountTestUtil.emailSample2).orElseThrow();
         // when
         CustomAccountDto customAccountDto = accountService.modifyAccount(account.getAccountId(), modifyAccountForm);
         // then

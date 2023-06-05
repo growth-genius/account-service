@@ -1,4 +1,4 @@
-package com.gg.accountservice.infra.security;
+package com.gg.tgather.accountservice.infra.security;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
