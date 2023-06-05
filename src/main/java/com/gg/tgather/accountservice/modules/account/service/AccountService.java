@@ -44,7 +44,6 @@ public class AccountService {
     private final AuthService authService;
 
     /**
-     * 2
      * 회원가입
      *
      * @param accountSaveForm account 저장 폼
