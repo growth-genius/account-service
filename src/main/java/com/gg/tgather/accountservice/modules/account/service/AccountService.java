@@ -172,7 +172,7 @@ public class AccountService {
     /**
      * 메일 발송 실패시 삭제
      *
-     * @param emailMessage : 이메일 메시지 객체
+     * @param emailMessage 이메일 메시지 객체
      */
     @Transactional
     public void sendEmailFail(EmailMessage emailMessage) {

@@ -27,9 +27,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     /**
      * 이메일과 로그인 유형이 일치하는 사용자 확인
      *
-     * @param email     : 이메일
-     * @param loginType : 로그인 유형
-     * @return optional : 유효한 사용자 확인 결과값
+     * @param email     이메일
+     * @param loginType 로그인 유형
+     * @return optional  유효한 사용자 확인 결과값
      */
     @EntityGraph("Account.withRolesAndTravelThemes")
     Optional<Account> findByEmailAndLoginType(String email, LoginType loginType);
@@ -37,15 +37,15 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     /**
      * 이메일 조회
      *
-     * @param email : 이메일 주소
-     * @return optional : 유효한 이메일 확인 결과값
+     * @param email 이메일 주소
+     * @return optional  유효한 이메일 확인 결과값
      */
     Optional<Account> findByEmail(String email);
 
     /**
      * 사용자 정보 조회
      *
-     * @param accountId : 사용자 식별자
+     * @param accountId 사용자 식별자
      * @return optional 객체
      */
     @EntityGraph("Account.withRolesAndTravelThemes")
