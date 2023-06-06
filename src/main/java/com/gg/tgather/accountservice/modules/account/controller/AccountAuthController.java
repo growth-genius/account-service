@@ -76,7 +76,7 @@ public class AccountAuthController {
     }
 
     /**
-     * 닉네임 인증
+     * 닉네임 유효성 검사
      *
      * @param nickname 닉네임명
      * @return Boolean 닉네임 유효성 결과값
@@ -87,7 +87,7 @@ public class AccountAuthController {
     }
 
     /**
-     * 이메일 인증
+     * 이메일 유효성 검사
      *
      * @param email 이메일 입력폼
      * @return Boolean 이메일 유효성 결과값
