@@ -7,6 +7,12 @@ import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.enums.AccountRole;
 import com.gg.tgather.commonservice.security.Jwt;
 
+/**
+ * Custom Account
+ *
+ * @author joyeji
+ * @since 2023.06.06
+ */
 public class CustomAccountDto extends AccountDto {
 
     private CustomAccountDto(Account account) {
