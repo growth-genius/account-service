@@ -214,8 +214,7 @@ public class AccountService {
      * @return boolean 이메일 유효성 결과
      */
     public Boolean validEmailAddress(String email) {
-        boolean validEmail = EmailValidator.getInstance().isValid(email);
-        if (!validEmail) {
+        if (!EmailValidator.getInstance().isValid(email)) {
             throw new OmittedRequireFieldException("이메일 형식이 올바르지 않습니다.");
         }
 
