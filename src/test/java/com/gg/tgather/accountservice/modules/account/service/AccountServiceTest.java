@@ -1,16 +1,17 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.EMAIL_SAMPLE_1;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.EMAIL_SAMPLE_2;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.NICKNAME;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample2;
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample1;
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample2;
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.nickname;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
-import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
+import com.gg.tgather.accountservice.infra.container.AbstractContainerMvcTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
@@ -25,7 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 회원가입 테스트
  */
 @ServiceTest
-class AccountServiceTest extends AbstractContainerBaseTest {
+@EnableTestcontainers
+class AccountServiceTest extends AbstractContainerMvcTest {
 
     @Autowired
     private AccountService accountService;
@@ -41,9 +43,9 @@ class AccountServiceTest extends AbstractContainerBaseTest {
     @Test
     @Order(0)
     @DisplayName("닉네임 중복 여부 확인")
-    void validNickname() {
+    void whenNicknameExist_thenReturnTrue() {
         // when
-        boolean validNickname = accountService.validNickname(nickname);
+        boolean validNickname = accountService.validNickname(NICKNAME);
         // then
         assertTrue(validNickname);
     }
@@ -51,9 +53,9 @@ class AccountServiceTest extends AbstractContainerBaseTest {
     @Test
     @Order(1)
     @DisplayName("이메일 중복 여부 확인")
-    void isExistEmail() {
+    void whenEmailExist_thenReturnTrue() {
         // when
-        Boolean validEmailAddress = accountService.validEmailAddress(emailSample2);
+        Boolean validEmailAddress = accountService.validEmailAddress(EMAIL_SAMPLE_2);
         // then
         assertTrue(validEmailAddress);
     }
@@ -61,7 +63,7 @@ class AccountServiceTest extends AbstractContainerBaseTest {
     @Test
     @Order(2)
     @DisplayName("이메일 유효성 검사 확인")
-    void validEmail() {
+    void whenInCorrectEmail_thenExceptionThrows() {
         // given
         String email = "test";
         // when, then
@@ -72,9 +74,9 @@ class AccountServiceTest extends AbstractContainerBaseTest {
     @Test
     @Order(3)
     @DisplayName("회원가입 확인")
-    void test_case_1() {
+    void whenSignup_thenSuccess() {
         AccountDto accountDto = accountService.saveAccount(createAccountSaveFormWithEmailSample1());
-        assertEquals(emailSample1, accountDto.getEmail());
+        assertEquals(EMAIL_SAMPLE_1, accountDto.getEmail());
     }
 
 }

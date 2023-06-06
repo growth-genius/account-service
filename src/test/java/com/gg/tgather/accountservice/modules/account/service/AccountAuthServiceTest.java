@@ -1,12 +1,13 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.EMAIL_SAMPLE_1;
 import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.emailSample1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
-import com.gg.tgather.accountservice.infra.container.AbstractContainerBaseTest;
+import com.gg.tgather.accountservice.infra.container.AbstractContainerMvcTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
@@ -25,7 +26,8 @@ import org.springframework.security.authentication.BadCredentialsException;
  * 이메일 인증 관련 테스트코드 작성
  */
 @ServiceTest
-class AccountAuthServiceTest extends AbstractContainerBaseTest {
+@EnableTestcontainers
+class AccountAuthServiceTest extends AbstractContainerMvcTest {
 
     @Autowired
     private AccountService accountService;
@@ -36,26 +38,26 @@ class AccountAuthServiceTest extends AbstractContainerBaseTest {
     @BeforeEach
     void init() {
         AccountDto accountDto = accountService.saveAccount(createAccountSaveFormWithEmailSample1());
-        assertEquals(emailSample1, accountDto.getEmail());
+        assertEquals(EMAIL_SAMPLE_1, accountDto.getEmail());
     }
 
 
     @Test
     @DisplayName("인증코드 미인증 시 예외 발생")
-    void test_case_2() {
+    void whenAuthCodeNotValidation_thenExceptionThrows() {
         CredentialInfo credentialInfo = new CredentialInfo("TestYeji0529!", LoginType.TGAHTER);
         RequiredAuthAccountException requiredAuthAccountException = assertThrows(RequiredAuthAccountException.class,
-            () -> accountService.login(emailSample1, credentialInfo));
+            () -> accountService.login(EMAIL_SAMPLE_1, credentialInfo));
         assertEquals("이메일에 전송된 인증코드를 확인해주세요.", requiredAuthAccountException.getMessage());
     }
 
     @Test
     @DisplayName("이메일 인증코드 오기입시 예외 발생")
-    void test_case_4() {
+    void whenAuthCodeWrong_thenExceptionThrows() {
         //given
         AuthCodeForm authCodeForm = new AuthCodeForm();
         authCodeForm.setAuthCode("test_");
-        authCodeForm.setEmail(emailSample1);
+        authCodeForm.setEmail(EMAIL_SAMPLE_1);
         //when
         BadCredentialsException badCredentialsException = assertThrows(BadCredentialsException.class, () -> accountService.validAuthCode(authCodeForm));
         //then
@@ -64,14 +66,14 @@ class AccountAuthServiceTest extends AbstractContainerBaseTest {
 
     @Test
     @DisplayName("올바른 이메일 인증코드 기입시 인증 성공")
-    void test_case_3() {
+    void whenAuthCodeCorrect_thenAuthenticationSuccess() {
         //given
         AuthCodeForm authCodeForm = new AuthCodeForm();
         authCodeForm.setAuthCode("authcode_");
-        authCodeForm.setEmail(emailSample1);
+        authCodeForm.setEmail(EMAIL_SAMPLE_1);
         //when
         accountService.validAuthCode(authCodeForm);
-        Account account = accountRepository.findByEmail(emailSample1).orElseThrow();
+        Account account = accountRepository.findByEmail(EMAIL_SAMPLE_1).orElseThrow();
         //then
         assertEquals(AccountStatus.NORMAL, account.getAccountStatus());
     }
