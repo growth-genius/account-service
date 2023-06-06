@@ -7,6 +7,7 @@ import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.EmailAuthForm;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
@@ -220,4 +221,5 @@ public class AccountService {
 
         return accountRepository.findByEmail(email).isPresent();
     }
+
 }
