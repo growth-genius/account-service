@@ -1,4 +1,4 @@
-package com.gg.accountservice.infra.annotation;
+package com.gg.tgather.accountservice.infra.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

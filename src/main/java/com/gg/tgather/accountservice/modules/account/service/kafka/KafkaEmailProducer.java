@@ -17,7 +17,7 @@ public class KafkaEmailProducer {
     private final ObjectMapper objectMapper;
 
     public void send(String kafkaTopic, EmailMessage emailMessage) throws JsonProcessingException {
-        log.error("kafkaEmail.kafkaTopic :: {}", kafkaTopic);
+        log.info("kafkaEmail.kafkaTopic :: {}", kafkaTopic);
         String message = objectMapper.writeValueAsString(emailMessage);
         kafkaTemplate.send(kafkaTopic, message);
     }

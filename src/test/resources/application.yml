@@ -3,8 +3,7 @@ server:
 
 spring:
   profiles:
-    activate:
-      on-profile: test
+    active: test
   application:
     name: account-service
   datasource:
@@ -13,6 +12,7 @@ spring:
     url: jdbc:tc:postgresql:///commons-test
   flyway:
     enabled: false
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -20,11 +20,11 @@ eureka:
     register-with-eureka: true # eureka
     fetch-registry: true
     service-url:
-      defaultZone: http://sgyj-dev.synology.me:8761/eureka
+      defaultZone: http://localhost:8761/eureka
+
+kafka:
+  bootstrap-servers-config: 127.0.0.1:9092
 
 logging:
   level:
     com.gg.accountservice: DEBUG
-
-kafka:
-  bootstrap-servers-config: 127.0.0.1:9092

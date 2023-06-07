@@ -45,7 +45,7 @@ ext {
 }
 
 dependencies {
-    implementation 'com.gg.tgather:common-service:1.0.4'
+    implementation 'com.gg.tgather:common-service:1.0.5'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
@@ -73,6 +73,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    // email validation
+    implementation 'commons-validator:commons-validator:1.7'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
@@ -81,7 +83,7 @@ dependencies {
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
-
+    // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
     //querydsl 추가
@@ -94,7 +96,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.2'
 
-
+    // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka-test
+    testImplementation 'org.springframework.kafka:spring-kafka-test:3.0.4'
+    testImplementation 'org.testcontainers:kafka:1.17.6'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'

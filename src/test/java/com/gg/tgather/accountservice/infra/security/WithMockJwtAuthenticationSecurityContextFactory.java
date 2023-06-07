@@ -1,4 +1,4 @@
-package com.gg.accountservice.infra.security;
+package com.gg.tgather.accountservice.infra.security;
 
 import com.gg.tgather.commonservice.enums.AccountRole;
 import com.gg.tgather.commonservice.security.JwtAuthentication;

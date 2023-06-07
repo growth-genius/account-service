@@ -15,6 +15,7 @@ import com.gg.tgather.accountservice.modules.account.service.kafka.KafkaEmailPro
 import com.gg.tgather.commonservice.advice.exceptions.ExpiredTokenException;
 import com.gg.tgather.commonservice.advice.exceptions.NoMemberException;
 import com.gg.tgather.commonservice.advice.exceptions.NotFoundException;
+import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
 import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
@@ -27,10 +28,17 @@ import com.gg.tgather.commonservice.security.Jwt;
 import com.gg.tgather.commonservice.security.Jwt.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Account CRUD 프로세스
+ *
+ * @author joyeji
+ * @since 2023.06.05
+ */
 @Slf4j
 @BaseServiceAnnotation
 @RequiredArgsConstructor
@@ -44,7 +52,6 @@ public class AccountService {
     private final AuthService authService;
 
     /**
-     * 2
      * 회원가입
      *
      * @param accountSaveForm account 저장 폼
@@ -166,7 +173,7 @@ public class AccountService {
     /**
      * 메일 발송 실패시 삭제
      *
-     * @param emailMessage : 이메일 메시지 객체
+     * @param emailMessage 이메일 메시지 객체
      */
     @Transactional
     public void sendEmailFail(EmailMessage emailMessage) {
@@ -191,9 +198,9 @@ public class AccountService {
     /**
      * 사용자 정보 수정
      *
-     * @param accountId
-     * @param modifyAccountForm
-     * @return
+     * @param accountId         계정고유아이디
+     * @param modifyAccountForm 계정수정폼
+     * @return customAccountDto 수정된 accountDto
      */
     public CustomAccountDto modifyAccount(String accountId, ModifyAccountForm modifyAccountForm) {
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
@@ -201,8 +208,18 @@ public class AccountService {
         return CustomAccountDto.from(account);
     }
 
-    public Boolean validEmailAddress(EmailAuthForm emailAuthForm) {
-        return accountRepository.findByEmail(emailAuthForm.getEmail()).isPresent();
+    /**
+     * 이메일 유효성 여부 확인
+     *
+     * @param email 이메일 인증 폼
+     * @return boolean 이메일 유효성 결과
+     */
+    public Boolean validEmailAddress(String email) {
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw new OmittedRequireFieldException("이메일 형식이 올바르지 않습니다.");
+        }
+
+        return accountRepository.findByEmail(email).isPresent();
     }
 
 }
