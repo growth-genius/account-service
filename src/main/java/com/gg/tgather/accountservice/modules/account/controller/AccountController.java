@@ -34,8 +34,8 @@ public class AccountController {
     /**
      * 계정 정보 수정
      *
-     * @param accountId         : 사용자 식별자
-     * @param modifyAccountForm : 수정 입력 폼
+     * @param accountId         사용자 식별자
+     * @param modifyAccountForm 수정 입력 폼
      * @return 사용자 정보
      */
     @PatchMapping("/{accountId}")
