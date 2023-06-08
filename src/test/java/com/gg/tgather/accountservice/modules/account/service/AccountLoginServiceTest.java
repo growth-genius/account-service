@@ -3,9 +3,8 @@ package com.gg.tgather.accountservice.modules.account.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
-import com.gg.tgather.accountservice.infra.container.AbstractContainerMvcTest;
+import com.gg.tgather.accountservice.infra.container.PostgreTestContainerInitializer;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
@@ -23,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 사용자 로그인 후, 정보수정 테스트
  */
 @ServiceTest
-@EnableTestcontainers
-class AccountLoginServiceTest extends AbstractContainerMvcTest {
+class AccountLoginServiceTest extends PostgreTestContainerInitializer {
 
     @Autowired
     private AccountService accountService;

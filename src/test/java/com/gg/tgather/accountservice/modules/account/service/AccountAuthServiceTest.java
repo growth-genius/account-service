@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
-import com.gg.tgather.accountservice.infra.container.AbstractContainerMvcTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.security.authentication.BadCredentialsException;
 
 /**
@@ -27,7 +27,8 @@ import org.springframework.security.authentication.BadCredentialsException;
  */
 @ServiceTest
 @EnableTestcontainers
-class AccountAuthServiceTest extends AbstractContainerMvcTest {
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9093", "port=9093"})
+class AccountAuthServiceTest {
 
     @Autowired
     private AccountService accountService;
