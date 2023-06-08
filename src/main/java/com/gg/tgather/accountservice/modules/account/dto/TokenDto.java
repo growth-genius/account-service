@@ -18,4 +18,5 @@ public class TokenDto {
     public TokenDto(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+    
 }

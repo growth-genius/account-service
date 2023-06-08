@@ -1,18 +1,22 @@
 package com.gg.tgather.accountservice.modules.account.controller;
 
+import static com.gg.tgather.commonservice.utils.ApiUtil.success;
+
+import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.RenewalRefreshToken;
 import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.form.SignInForm;
 import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import com.gg.tgather.commonservice.annotation.RestBaseAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.security.CredentialInfo;
-import com.gg.tgather.commonservice.utils.ApiUtil;
 import com.gg.tgather.commonservice.utils.ApiUtil.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +43,7 @@ public class AccountAuthController {
      */
     @PostMapping("/sign-up")
     public ApiResult<AccountDto> addUser(@RequestBody @Valid AccountSaveForm accountSaveForm) {
-        return ApiUtil.success(accountService.saveAccount(accountSaveForm));
+        return success(accountService.saveAccount(accountSaveForm));
     }
 
     /**
@@ -50,7 +54,7 @@ public class AccountAuthController {
      */
     @PostMapping("/confirm-authcode")
     public ApiResult<AccountDto> validEmailByAuthCode(@RequestBody @Valid AuthCodeForm authCodeForm) {
-        return ApiUtil.success(accountService.validAuthCode(authCodeForm));
+        return success(accountService.validAuthCode(authCodeForm));
     }
 
     /**
@@ -61,7 +65,7 @@ public class AccountAuthController {
      */
     @PostMapping("/sign-in")
     public ApiResult<AccountDto> login(@RequestBody @Valid SignInForm signInForm) {
-        return ApiUtil.success(accountService.login(signInForm.getEmail(), new CredentialInfo(signInForm.getPassword())));
+        return success(accountService.login(signInForm.getEmail(), new CredentialInfo(signInForm.getPassword())));
     }
 
     /**
@@ -72,7 +76,7 @@ public class AccountAuthController {
      */
     @PostMapping("/resend/authcode")
     public ApiResult<Boolean> resendAuthCode(@RequestBody @Valid ResendAuthForm authCodeForm) {
-        return ApiUtil.success(accountService.resendAuthCode(authCodeForm));
+        return success(accountService.resendAuthCode(authCodeForm));
     }
 
     /**
@@ -83,7 +87,7 @@ public class AccountAuthController {
      */
     @GetMapping("/check-nickname/{nickname}")
     public ApiResult<Boolean> authNickname(@PathVariable String nickname) {
-        return ApiUtil.success(accountService.validNickname(nickname));
+        return success(accountService.validNickname(nickname));
     }
 
     /**
@@ -94,7 +98,19 @@ public class AccountAuthController {
      */
     @GetMapping("/check-email/{email}")
     public ApiResult<Boolean> validEmailAddress(@PathVariable String email) {
-        return ApiUtil.success(accountService.validEmailAddress(email));
+        return success(accountService.validEmailAddress(email));
+    }
+
+
+    /**
+     * refreshToken 으로 accessToken 재발행
+     *
+     * @param renewalRefreshToken refreshToken
+     * @return TokenDto 신규 발급된 토큰 정보
+     */
+    @PatchMapping("/refresh-token")
+    public ApiResult<TokenDto> renewalTokenByRefreshToken(@Valid @RequestBody RenewalRefreshToken renewalRefreshToken) {
+        return success(accountService.renewalTokenByRefreshToken(renewalRefreshToken));
     }
 
 }

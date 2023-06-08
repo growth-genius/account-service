@@ -8,6 +8,7 @@ import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
+import com.gg.tgather.accountservice.modules.account.form.RenewalRefreshToken;
 import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.accountservice.modules.account.service.kafka.KafkaEmailProducer;
@@ -151,12 +152,12 @@ public class AccountService {
     /**
      * 토큰 갱신
      *
-     * @param tokenDto 토큰 갱신 Dto
+     * @param renewalRefreshToken 토큰 갱신 Dto
      * @return TokenDto 갱신 토큰 결과 Dto
      */
-    public TokenDto renewalTokenByRefreshToken(TokenDto tokenDto) {
-        if (jwt.validateToken(tokenDto.getRefreshToken())) {
-            Claims claims = jwt.verify(tokenDto.getRefreshToken());
+    public TokenDto renewalTokenByRefreshToken(RenewalRefreshToken renewalRefreshToken) {
+        if (jwt.validateToken(renewalRefreshToken.getRefreshToken())) {
+            Claims claims = jwt.verify(renewalRefreshToken.getRefreshToken());
             Account account = accountRepository.findByEmailAndLoginType(claims.getEmail(), LoginType.TGAHTER)
                 .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
             AccountDto accountDto = CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
