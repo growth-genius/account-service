@@ -13,8 +13,8 @@ import org.testcontainers.utility.DockerImageName;
 public class TestContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3")).withEmbeddedZookeeper();
-
     static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres");
+
 
     static {
         Startables.deepStart(postgres, kafka).join();

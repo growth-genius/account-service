@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
-import com.gg.tgather.accountservice.infra.container.AbstractContainerMvcTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
@@ -21,13 +20,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
 /**
  * 회원가입 테스트
  */
 @ServiceTest
 @EnableTestcontainers
-class AccountServiceTest extends AbstractContainerMvcTest {
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9094", "port=9094"})
+class AccountServiceTest {
 
     @Autowired
     private AccountService accountService;
