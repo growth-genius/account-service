@@ -46,11 +46,15 @@ node {
         }
 
         stage("Discord push"){
-            discordSend description: "Jenkins 빌드가 성공했습니다.",
-                  footer: "Jenkins 빌드가 성공했습니다.",
-                  result: currentBuild.currentResult,
-                  title: "Jenkins Build",
-                  webhookURL: env.WEBHOOK_URL
+            try{
+                discordSend description: "Jenkins 빌드가 성공했습니다.",
+                      footer: "Jenkins 빌드가 성공했습니다.",
+                      result: currentBuild.currentResult,
+                      title: "Jenkins Build",
+                      webhookURL: env.WEBHOOK_URL
+            }catch(e) {
+                print(e)
+            }
         }
 
     } catch(e) {
