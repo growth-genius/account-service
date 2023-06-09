@@ -1,5 +1,7 @@
 node {
-
+    environment {
+        WEBHOOK_URL = credentials("DISCORD_WEBHOOK")
+    }
     try {
         stage('Start') {
             // slackSend (channel: '#jenkins', color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
@@ -41,6 +43,17 @@ node {
             sh(script: "docker rm ${IMAGE_NAME} || true")
             sh(script: "docker rmi ${IMAGE_NAME} || true")
             sh(script:"docker run --network ${DOCKER_NETWORK} -m 3g --env JAVA_OPTS='-Dspring.profiles.active=${SPRING_PROFILE} -Dfile.encoding=UTF-8 -Djasypt.encryptor.password=${DJASYPT_PASSWORD} -Xmx8192m -XX:MaxMetaspaceSize=1024m' --user root -d -e TZ=Asia/Seoul --name ${IMAGE_NAME} ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest")
+        }
+
+        post {
+            success {
+                discordSend description: "Jenkins 빌드가 성공했습니다.",
+                            footer: "Jenkins 빌드가 성공했습니다.",
+                            link: env.BUILD_URL,
+                            result: currentBuild.currentResult,
+                            title: "Jenkins Build",
+                            webhookURL: env.WEBHOOK_URL
+            }
         }
 
     } catch(e) {
