@@ -1,7 +1,4 @@
 node {
-    environment {
-        WEBHOOK_URL = credentials("DISCORD_WEBHOOK")
-    }
     try {
         stage('Start') {
             // slackSend (channel: '#jenkins', color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
@@ -51,7 +48,7 @@ node {
                       footer: "Jenkins 빌드가 성공했습니다.",
                       result: currentBuild.currentResult,
                       title: "Jenkins Build",
-                      webhookURL: env.WEBHOOK_URL
+                      webhookURL: ${WEBHOOK_URL}
             }catch(e) {
                 print(e)
             }
