@@ -45,25 +45,21 @@ node {
             sh(script:"docker run --network ${DOCKER_NETWORK} -m 3g --env JAVA_OPTS='-Dspring.profiles.active=${SPRING_PROFILE} -Dfile.encoding=UTF-8 -Djasypt.encryptor.password=${DJASYPT_PASSWORD} -Xmx8192m -XX:MaxMetaspaceSize=1024m' --user root -d -e TZ=Asia/Seoul --name ${IMAGE_NAME} ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest")
         }
 
-       stage("Discord push"){
-            try{
-                post {
-                    success {
-                        discordSend description: "Jenkins 빌드가 성공했습니다.",
-                                    footer: "Jenkins 빌드가 성공했습니다.",
-                                    link: env.BUILD_URL,
-                                    result: currentBuild.currentResult,
-                                    title: "Jenkins Build",
-                                    webhookURL: env.WEBHOOK_URL
-                    }
-                }
-            }catch (e) {
-              print(e)
-            }
-       }
-
     } catch(e) {
         print(e)
+    } finally{
+        try{
+            success {
+                discordSend description: "Jenkins 빌드가 성공했습니다.",
+                            footer: "Jenkins 빌드가 성공했습니다.",
+                            link: env.BUILD_URL,
+                            result: currentBuild.currentResult,
+                            title: "Jenkins Build",
+                            webhookURL: env.WEBHOOK_URL
+            }
+        }catch(e){
+            print(e)
+        }
     }
 
 }
