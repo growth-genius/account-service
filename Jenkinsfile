@@ -48,7 +48,7 @@ node {
                       footer: "Jenkins 빌드가 성공했습니다.",
                       result: currentBuild.currentResult,
                       title: "Jenkins Build",
-                      webhookURL: ${WEBHOOK_URL}
+                      webhookURL: "${WEBHOOK_URL}"
             }catch(e) {
                 print(e)
             }
