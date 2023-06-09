@@ -44,8 +44,14 @@ ext {
     set('testcontainersVersion', "1.17.6")
 }
 
+configurations.configureEach {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
-    implementation 'com.gg.tgather:common-service:1.0.6'
+    implementation('com.gg.tgather:common-service:1.0.1-SNAPSHOT') {
+        changing = true
+    }
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
