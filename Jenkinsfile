@@ -55,6 +55,5 @@ node {
 
     } catch(e) {
         print(e)
-    }
-
+    } 
 }
