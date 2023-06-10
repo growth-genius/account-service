@@ -34,4 +34,5 @@ public class CustomAccountDto extends AccountDto {
         this.accessToken = jwt.createAccessToken(claims);
         this.refreshToken = jwt.createRefreshToken(claims);
     }
+    
 }

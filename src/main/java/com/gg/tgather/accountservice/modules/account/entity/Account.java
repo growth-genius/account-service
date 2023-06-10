@@ -1,7 +1,5 @@
 package com.gg.tgather.accountservice.modules.account.entity;
 
-import static jakarta.persistence.FetchType.LAZY;
-
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
@@ -11,28 +9,19 @@ import com.gg.tgather.commonservice.enums.ErrorMessage;
 import com.gg.tgather.commonservice.enums.LoginType;
 import com.gg.tgather.commonservice.enums.TravelTheme;
 import com.gg.tgather.commonservice.jpa.UpdatedEntity;
-import jakarta.persistence.Basic;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -79,46 +68,55 @@ public class Account extends UpdatedEntity {
     @CollectionTable(name = "travel_themes_account", joinColumns = @JoinColumn(name = "account_id"))
     private Set<TravelTheme> travelThemes;
 
-    /** 계정 상태 */
+    /* 계정 상태 */
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.VERIFY_EMAIL;
 
-    /** 프로필 이미지 */
+    /* 프로필 이미지 */
     @Lob
     @Basic
     private String profileImage;
 
-    /** 가입일자 */
+    /* 가입일자 */
     private LocalDateTime joinedAt;
 
-    /** 로그인 횟수 */
+    /* 로그인 횟수 */
     private int loginCount;
 
-    /** 로그인 실패 회수 */
+    /* 로그인 실패 회수 */
     private int loginFailCount;
 
-    /** 마지막 로그인 일자 */
+    /* 마지막 로그인 일자 */
     private LocalDateTime lastLoginAt;
 
+    /* fcm 토큰 */
+    private String fcmToken;
 
-    /** 로그인 후 세팅 */
-    public void afterLoginSuccess() {
+    /* 로그인 후 세팅 */
+    public void afterLoginSuccess(String fcmToken) {
         this.loginFailCount = 0;
         this.loginCount++;
         this.lastLoginAt = LocalDateTime.now();
+        if (StringUtils.isNotEmpty(fcmToken)) this.changeFcmTokenIfChanged(fcmToken);
     }
 
-    /** 비밀번호 변경 */
+    /**
+     * 비밀번호 변경
+     */
     public void changePassword(String password) {
         this.password = password;
     }
 
-    /** 프로필 사진 변경 */
+    /**
+     * 프로필 사진 변경
+     */
     public void changeProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 
-    /** 이름 변경 */
+    /**
+     * 이름 변경
+     */
     public void changeNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -168,6 +166,15 @@ public class Account extends UpdatedEntity {
         this.travelThemes = modifyAccountForm.getTravelThemes();
         this.username = modifyAccountForm.getUsername();
         this.profileImage = modifyAccountForm.getProfileImage();
+    }
+
+    /**
+     * fcm 토큰 변경 시 토큰 변경
+     *
+     * @param fcmToken : fcm 토큰
+     */
+    public void changeFcmTokenIfChanged(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
 }

@@ -1,13 +1,11 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
 import com.gg.tgather.accountservice.infra.container.PostgreTestContainerInitializer;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
+import com.gg.tgather.accountservice.modules.account.form.SignInForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.accountservice.modules.account.util.AccountTestUtil;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
@@ -17,6 +15,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 사용자 로그인 후, 정보수정 테스트
@@ -43,7 +44,7 @@ class AccountLoginServiceTest extends PostgreTestContainerInitializer {
         // given
         CredentialInfo credentialInfo = new CredentialInfo(AccountTestUtil.EMAIL_SAMPLE_2_PASSWORD);
         // when
-        AccountDto loginAccount = accountService.login(AccountTestUtil.EMAIL_SAMPLE_2, credentialInfo);
+        AccountDto loginAccount = accountService.login(new SignInForm(AccountTestUtil.EMAIL_SAMPLE_2, credentialInfo.getCredential()));
         // then
         assertEquals(1, loginAccount.getLoginCount());
         assertNotNull(loginAccount.getRefreshToken());

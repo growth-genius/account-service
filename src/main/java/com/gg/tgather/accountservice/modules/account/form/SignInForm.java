@@ -16,5 +16,11 @@ public class SignInForm {
     @NotNull(message = "비밀번호 입력해 주세요.")
     private String password;
 
+    private String fcmToken;
 
+    public SignInForm(@NotNull String email, @NotNull String password) {
+        this.email = email;
+        this.password = password;
+    }
+    
 }
