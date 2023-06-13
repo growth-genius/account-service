@@ -28,6 +28,3 @@ kafka:
 logging:
   level:
     com.gg.accountservice: DEBUG
-
-kafka:
-  bootstrap-servers-config: 127.0.0.1:9092
