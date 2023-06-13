@@ -1,26 +1,16 @@
 package com.gg.tgather.accountservice.modules.account.controller;
 
-import static com.gg.tgather.commonservice.utils.ApiUtil.success;
-
 import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
-import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
-import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.tgather.accountservice.modules.account.form.RenewalRefreshToken;
-import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
-import com.gg.tgather.accountservice.modules.account.form.SignInForm;
+import com.gg.tgather.accountservice.modules.account.form.*;
 import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import com.gg.tgather.commonservice.annotation.RestBaseAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
-import com.gg.tgather.commonservice.security.CredentialInfo;
 import com.gg.tgather.commonservice.utils.ApiUtil.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import static com.gg.tgather.commonservice.utils.ApiUtil.success;
 
 /**
  * account CRUD api
@@ -65,7 +55,18 @@ public class AccountAuthController {
      */
     @PostMapping("/sign-in")
     public ApiResult<AccountDto> login(@RequestBody @Valid SignInForm signInForm) {
-        return success(accountService.login(signInForm.getEmail(), new CredentialInfo(signInForm.getPassword())));
+        return success(accountService.login(signInForm));
+    }
+
+    /**
+     * 자동 로그인
+     *
+     * @param autoSignInForm refresh 토큰이 담긴 폼
+     * @return AccountDto 로그인 계정 정보
+     */
+    @PostMapping("/auto-sign-in")
+    public ApiResult<AccountDto> autoLogin(@RequestBody @Valid AutoSignInForm autoSignInForm) {
+        return success(accountService.autoLogIn(autoSignInForm));
     }
 
     /**
@@ -87,7 +88,7 @@ public class AccountAuthController {
      */
     @GetMapping("/check-nickname/{nickname}")
     public ApiResult<Boolean> authNickname(@PathVariable String nickname) {
-        return success(accountService.validNickname(nickname));
+        return success(accountService.validNickname(nickname), "사용 가능한 닉네임 입니다.");
     }
 
     /**
@@ -98,7 +99,7 @@ public class AccountAuthController {
      */
     @GetMapping("/check-email/{email}")
     public ApiResult<Boolean> validEmailAddress(@PathVariable String email) {
-        return success(accountService.validEmailAddress(email));
+        return success(accountService.validEmailAddress(email), "사용 가능한 이메일 입니다.");
     }
 
 

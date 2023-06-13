@@ -1,15 +1,11 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.EMAIL_SAMPLE_1;
-import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.gg.tgather.accountservice.infra.annotation.EnableTestcontainers;
 import com.gg.tgather.accountservice.infra.annotation.ServiceTest;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
 import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.SignInForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
@@ -21,6 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.security.authentication.BadCredentialsException;
+
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.EMAIL_SAMPLE_1;
+import static com.gg.tgather.accountservice.modules.account.util.AccountTestUtil.createAccountSaveFormWithEmailSample1;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * 이메일 인증 관련 테스트코드 작성
@@ -48,7 +49,7 @@ class AccountAuthServiceTest {
     void whenAuthCodeNotValidation_thenExceptionThrows() {
         CredentialInfo credentialInfo = new CredentialInfo("TestYeji0529!", LoginType.TGAHTER);
         RequiredAuthAccountException requiredAuthAccountException = assertThrows(RequiredAuthAccountException.class,
-            () -> accountService.login(EMAIL_SAMPLE_1, credentialInfo));
+                () -> accountService.login(new SignInForm(EMAIL_SAMPLE_1, credentialInfo.getCredential())));
         assertEquals("이메일에 전송된 인증코드를 확인해주세요.", requiredAuthAccountException.getMessage());
     }
 
