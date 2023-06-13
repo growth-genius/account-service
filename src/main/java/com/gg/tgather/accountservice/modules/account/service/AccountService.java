@@ -5,10 +5,20 @@ import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
-import com.gg.tgather.accountservice.modules.account.form.*;
+import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
+import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
+import com.gg.tgather.accountservice.modules.account.form.AutoSignInForm;
+import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
+import com.gg.tgather.accountservice.modules.account.form.RenewalRefreshToken;
+import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
+import com.gg.tgather.accountservice.modules.account.form.SignInForm;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.accountservice.modules.account.service.kafka.KafkaEmailProducer;
-import com.gg.tgather.commonservice.advice.exceptions.*;
+import com.gg.tgather.commonservice.advice.exceptions.ExpiredTokenException;
+import com.gg.tgather.commonservice.advice.exceptions.NoMemberException;
+import com.gg.tgather.commonservice.advice.exceptions.NotFoundException;
+import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
+import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
 import com.gg.tgather.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.dto.mail.EmailMessage;
@@ -71,7 +81,7 @@ public class AccountService {
 
         try {
             kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(),
-                    EmailMessage.builder().accountId(accountId).to(email).message(authCode).mailSubject(MailSubject.VALID_AUTHENTICATION_ACCOUNT).build());
+                EmailMessage.builder().accountId(accountId).to(email).message(authCode).mailSubject(MailSubject.VALID_AUTHENTICATION_ACCOUNT).build());
         } catch (JsonProcessingException e) {
             log.error("Fail to Send Email");
         }
@@ -152,7 +162,7 @@ public class AccountService {
         if (jwt.validateToken(renewalRefreshToken.getRefreshToken())) {
             Claims claims = jwt.verify(renewalRefreshToken.getRefreshToken());
             Account account = accountRepository.findByEmailAndLoginType(claims.getEmail(), LoginType.TGAHTER)
-                    .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
             AccountDto accountDto = CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
             return TokenDto.builder().accessToken(accountDto.getAccessToken()).refreshToken(accountDto.getRefreshToken()).build();
         }
@@ -222,7 +232,7 @@ public class AccountService {
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
         account.changeFcmTokenIfChanged(autoSignInForm.getFcmToken());
 
-        return CustomAccountDto.from(account);
+        return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
     }
-    
+
 }
