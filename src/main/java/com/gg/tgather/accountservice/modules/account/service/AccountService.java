@@ -5,18 +5,10 @@ import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
 import com.gg.tgather.accountservice.modules.account.entity.Account;
 import com.gg.tgather.accountservice.modules.account.enums.AccountStatus;
-import com.gg.tgather.accountservice.modules.account.form.AccountSaveForm;
-import com.gg.tgather.accountservice.modules.account.form.AuthCodeForm;
-import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
-import com.gg.tgather.accountservice.modules.account.form.RenewalRefreshToken;
-import com.gg.tgather.accountservice.modules.account.form.ResendAuthForm;
+import com.gg.tgather.accountservice.modules.account.form.*;
 import com.gg.tgather.accountservice.modules.account.repository.AccountRepository;
 import com.gg.tgather.accountservice.modules.account.service.kafka.KafkaEmailProducer;
-import com.gg.tgather.commonservice.advice.exceptions.ExpiredTokenException;
-import com.gg.tgather.commonservice.advice.exceptions.NoMemberException;
-import com.gg.tgather.commonservice.advice.exceptions.NotFoundException;
-import com.gg.tgather.commonservice.advice.exceptions.OmittedRequireFieldException;
-import com.gg.tgather.commonservice.advice.exceptions.RequiredAuthAccountException;
+import com.gg.tgather.commonservice.advice.exceptions.*;
 import com.gg.tgather.commonservice.annotation.BaseServiceAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
 import com.gg.tgather.commonservice.dto.mail.EmailMessage;
@@ -79,7 +71,7 @@ public class AccountService {
 
         try {
             kafkaEmailProducer.send(kafkaUserTopicProperties.getAuthenticationMailTopic(),
-                EmailMessage.builder().accountId(accountId).to(email).message(authCode).mailSubject(MailSubject.VALID_AUTHENTICATION_ACCOUNT).build());
+                    EmailMessage.builder().accountId(accountId).to(email).message(authCode).mailSubject(MailSubject.VALID_AUTHENTICATION_ACCOUNT).build());
         } catch (JsonProcessingException e) {
             log.error("Fail to Send Email");
         }
@@ -117,11 +109,12 @@ public class AccountService {
     /**
      * 사용자 로그인
      *
-     * @param email      이메일
-     * @param credential 인증
+     * @param signInForm 로그인 폼
      * @return AccountDto 계정 Dto
      */
-    public AccountDto login(String email, CredentialInfo credential) {
+    public AccountDto login(SignInForm signInForm) {
+        String email = signInForm.getEmail();
+        CredentialInfo credential = new CredentialInfo(signInForm.getPassword());
         Account account = accountRepository.findByEmailAndLoginType(email, credential.getLoginType()).orElseThrow(NoMemberException::new);
 
         if (account.getAccountStatus() == AccountStatus.VERIFY_EMAIL) {
@@ -129,7 +122,7 @@ public class AccountService {
         }
 
         account.login(passwordEncoder, credential.getCredential());
-        account.afterLoginSuccess();
+        account.afterLoginSuccess(signInForm.getFcmToken());
         return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
     }
 
@@ -159,7 +152,7 @@ public class AccountService {
         if (jwt.validateToken(renewalRefreshToken.getRefreshToken())) {
             Claims claims = jwt.verify(renewalRefreshToken.getRefreshToken());
             Account account = accountRepository.findByEmailAndLoginType(claims.getEmail(), LoginType.TGAHTER)
-                .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new NotFoundException("이메일을 찾을 수 없습니다."));
             AccountDto accountDto = CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
             return TokenDto.builder().accessToken(accountDto.getAccessToken()).refreshToken(accountDto.getRefreshToken()).build();
         }
@@ -222,4 +215,14 @@ public class AccountService {
         return accountRepository.findByEmail(email).isPresent();
     }
 
+    public CustomAccountDto autoLogIn(AutoSignInForm autoSignInForm) {
+        String refreshToken = autoSignInForm.getRefreshToken();
+        Claims claims = jwt.verify(refreshToken);
+        String accountId = claims.getAccountId();
+        Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
+        account.changeFcmTokenIfChanged(autoSignInForm.getFcmToken());
+
+        return CustomAccountDto.from(account);
+    }
+    
 }
