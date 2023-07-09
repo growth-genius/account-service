@@ -30,9 +30,9 @@ public class CustomAccountDto extends AccountDto {
     }
 
     public void generateAccessToken(Jwt jwt) {
-        Jwt.Claims claims = Jwt.Claims.of(id, accountId, email, roles.stream().map(AccountRole::name).toArray(String[]::new));
+        Jwt.Claims claims = Jwt.Claims.of(id, accountId, email, nickname, roles.stream().map(AccountRole::name).toArray(String[]::new));
         this.accessToken = jwt.createAccessToken(claims);
         this.refreshToken = jwt.createRefreshToken(claims);
     }
-    
+
 }
