@@ -28,6 +28,8 @@ import com.gg.tgather.commonservice.properties.KafkaUserTopicProperties;
 import com.gg.tgather.commonservice.security.CredentialInfo;
 import com.gg.tgather.commonservice.security.Jwt;
 import com.gg.tgather.commonservice.security.Jwt.Claims;
+import com.gg.tgather.commonservice.security.JwtAuthentication;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -235,4 +237,20 @@ public class AccountService {
         return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
     }
 
+    public List<CustomAccountDto> getAccounts(List<String> accountIds) {
+        return accountRepository.findAllByAccountIds(accountIds);
+    }
+
+    /**
+     * 로그인 사용자의 정보 가져오는 메서드
+     * 비밀번호를 내리지 않기 위해 CustomAccountDto 를 사용한다.
+     *
+     * @param authentication 로그인 사용자
+     * @return CustomAccountDto 로그인 사용자 정보
+     * @see CustomAccountDto#from(Account)
+     */
+    public CustomAccountDto getByAccount(JwtAuthentication authentication) {
+        return CustomAccountDto.from(accountRepository.findByAccountId(authentication.accountId()).orElseThrow(NoMemberException::new));
+    }
+    
 }

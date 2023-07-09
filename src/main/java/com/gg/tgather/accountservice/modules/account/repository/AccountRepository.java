@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2023.06.05
  */
 @Transactional(readOnly = true)
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends JpaRepository<Account, Long>, AccountRepositoryQuerydsl {
 
     /**
      * 닉네임 유효성 확인

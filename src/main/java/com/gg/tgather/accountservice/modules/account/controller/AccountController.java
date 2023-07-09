@@ -1,12 +1,20 @@
 package com.gg.tgather.accountservice.modules.account.controller;
 
+import static com.gg.tgather.commonservice.utils.ApiUtil.success;
+
+import com.gg.tgather.accountservice.modules.account.dto.ModifyAccountDto;
 import com.gg.tgather.accountservice.modules.account.form.ModifyAccountForm;
 import com.gg.tgather.accountservice.modules.account.service.AccountService;
 import com.gg.tgather.commonservice.annotation.RestBaseAnnotation;
 import com.gg.tgather.commonservice.dto.account.AccountDto;
-import com.gg.tgather.commonservice.utils.ApiUtil;
+import com.gg.tgather.commonservice.enums.EnumMapperValue;
+import com.gg.tgather.commonservice.enums.TravelTheme;
+import com.gg.tgather.commonservice.security.JwtAuthentication;
 import com.gg.tgather.commonservice.utils.ApiUtil.ApiResult;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +35,7 @@ public class AccountController {
      */
     @GetMapping("/{accountId}")
     public ApiResult<AccountDto> getAccount(@PathVariable String accountId) {
-        return ApiUtil.success(accountService.getAccount(accountId));
+        return success(accountService.getAccount(accountId));
     }
 
 
@@ -40,7 +48,31 @@ public class AccountController {
      */
     @PatchMapping("/{accountId}")
     public ApiResult<AccountDto> modifyAccount(@PathVariable String accountId, ModifyAccountForm modifyAccountForm) {
-        return ApiUtil.success(accountService.modifyAccount(accountId, modifyAccountForm));
+        return success(accountService.modifyAccount(accountId, modifyAccountForm));
     }
+
+    /**
+     * 사용자 목록 조회
+     *
+     * @param accountIds 조회할 사용자 아이디 목록
+     * @return List<AccountDto> 조회된 사용자 목록</AccountDto>
+     */
+    @GetMapping
+    public ApiResult<List<? extends AccountDto>> getAccounts(List<String> accountIds) {
+        return success(accountService.getAccounts(accountIds));
+    }
+
+    /**
+     * 로그인 사용자의 수정 정보 조회
+     *
+     * @param authentication 로그인 사용자
+     * @return ModifyAccountDto
+     */
+    @GetMapping("/me")
+    public ApiResult<ModifyAccountDto> getMyAccountInfo(@AuthenticationPrincipal JwtAuthentication authentication) {
+        return success(ModifyAccountDto.builder().accountDto(accountService.getByAccount(authentication))
+            .travelThemes(Arrays.stream(TravelTheme.values()).map(EnumMapperValue::new).toList()).build());
+    }
+
 
 }
