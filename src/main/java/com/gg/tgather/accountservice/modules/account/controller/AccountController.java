@@ -11,6 +11,7 @@ import com.gg.tgather.commonservice.enums.EnumMapperValue;
 import com.gg.tgather.commonservice.enums.TravelTheme;
 import com.gg.tgather.commonservice.security.JwtAuthentication;
 import com.gg.tgather.commonservice.utils.ApiUtil.ApiResult;
+import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestBaseAnnotation
@@ -47,7 +49,7 @@ public class AccountController {
      * @return 사용자 정보
      */
     @PatchMapping("/{accountId}")
-    public ApiResult<AccountDto> modifyAccount(@PathVariable String accountId, ModifyAccountForm modifyAccountForm) {
+    public ApiResult<AccountDto> modifyAccount(@PathVariable String accountId, @Valid @RequestBody ModifyAccountForm modifyAccountForm) {
         return success(accountService.modifyAccount(accountId, modifyAccountForm));
     }
 

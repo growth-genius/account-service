@@ -35,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Account CRUD 프로세스
@@ -180,7 +179,6 @@ public class AccountService {
      *
      * @param emailMessage 이메일 메시지 객체
      */
-    @Transactional
     public void sendEmailFail(EmailMessage emailMessage) {
         String accountId = emailMessage.getAccountId();
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
