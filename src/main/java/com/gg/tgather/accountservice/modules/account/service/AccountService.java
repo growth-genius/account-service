@@ -250,7 +250,8 @@ public class AccountService {
      * @see CustomAccountDto#from(Account)
      */
     public CustomAccountDto getByAccount(JwtAuthentication authentication) {
+        log.error("authentication.id :: {}", authentication.accountId());
         return CustomAccountDto.from(accountRepository.findByAccountId(authentication.accountId()).orElseThrow(NoMemberException::new));
     }
-    
+
 }
