@@ -1,5 +1,7 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
@@ -30,6 +32,7 @@ import com.gg.tgather.commonservice.security.Jwt;
 import com.gg.tgather.commonservice.security.Jwt.Claims;
 import com.gg.tgather.commonservice.security.JwtAuthentication;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -171,7 +174,11 @@ public class AccountService {
     }
 
     public AccountDto getAccount(String accountId) {
-        return CustomAccountDto.from(accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new));
+        Optional<Account> byAccountId = accountRepository.findByAccountId(accountId);
+        Account account = byAccountId.orElseThrow(NoMemberException::new);
+        AccountDto accountDto = AccountDto.create();
+        copyProperties(account, accountDto);
+        return accountDto;
     }
 
     /**
