@@ -36,8 +36,8 @@ public class AccountController {
      * @return 사용자 정보
      */
     @GetMapping("/{accountId}")
-    public ApiResult<AccountDto> getAccount(@PathVariable String accountId) {
-        return success(accountService.getAccount(accountId));
+    public AccountDto getAccount(@PathVariable String accountId) {
+        return accountService.getAccount(accountId);
     }
 
 
