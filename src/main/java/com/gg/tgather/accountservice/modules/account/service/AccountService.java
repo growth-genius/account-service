@@ -1,5 +1,7 @@
 package com.gg.tgather.accountservice.modules.account.service;
 
+import static org.springframework.beans.BeanUtils.copyProperties;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gg.tgather.accountservice.modules.account.dto.CustomAccountDto;
 import com.gg.tgather.accountservice.modules.account.dto.TokenDto;
@@ -28,12 +30,14 @@ import com.gg.tgather.commonservice.properties.KafkaUserTopicProperties;
 import com.gg.tgather.commonservice.security.CredentialInfo;
 import com.gg.tgather.commonservice.security.Jwt;
 import com.gg.tgather.commonservice.security.Jwt.Claims;
+import com.gg.tgather.commonservice.security.JwtAuthentication;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Account CRUD 프로세스
@@ -170,7 +174,11 @@ public class AccountService {
     }
 
     public AccountDto getAccount(String accountId) {
-        return CustomAccountDto.from(accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new));
+        Optional<Account> byAccountId = accountRepository.findByAccountId(accountId);
+        Account account = byAccountId.orElseThrow(NoMemberException::new);
+        AccountDto accountDto = AccountDto.create();
+        copyProperties(account, accountDto);
+        return accountDto;
     }
 
     /**
@@ -178,7 +186,6 @@ public class AccountService {
      *
      * @param emailMessage 이메일 메시지 객체
      */
-    @Transactional
     public void sendEmailFail(EmailMessage emailMessage) {
         String accountId = emailMessage.getAccountId();
         Account account = accountRepository.findByAccountId(accountId).orElseThrow(NoMemberException::new);
@@ -233,6 +240,23 @@ public class AccountService {
         account.changeFcmTokenIfChanged(autoSignInForm.getFcmToken());
 
         return CustomAccountDto.createByAccountAndGenerateAccessToken(account, jwt);
+    }
+
+    public List<CustomAccountDto> getAccounts(List<String> accountIds) {
+        return accountRepository.findAllByAccountIds(accountIds);
+    }
+
+    /**
+     * 로그인 사용자의 정보 가져오는 메서드
+     * 비밀번호를 내리지 않기 위해 CustomAccountDto 를 사용한다.
+     *
+     * @param authentication 로그인 사용자
+     * @return CustomAccountDto 로그인 사용자 정보
+     * @see CustomAccountDto#from(Account)
+     */
+    public CustomAccountDto getByAccount(JwtAuthentication authentication) {
+        log.error("authentication.id :: {}", authentication.accountId());
+        return CustomAccountDto.from(accountRepository.findByAccountId(authentication.accountId()).orElseThrow(NoMemberException::new));
     }
 
 }
